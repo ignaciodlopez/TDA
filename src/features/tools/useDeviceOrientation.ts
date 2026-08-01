@@ -20,6 +20,37 @@ interface DeviceOrientationEventConstructorIOS {
 }
 
 /**
+ * Rumbo de brújula (0 = norte, horario) a partir de los tres ejes de deviceorientation.
+ * No alcanza con `360 - alpha`: esta herramienta se usa con el celular inclinado hacia arriba
+ * (apuntando a una antena en el techo), y con esa inclinación alpha/beta/gamma quedan acoplados
+ * (los ángulos de Euler intrínsecos entran en gimbal lock), así que hay que combinar los tres ejes.
+ * Fórmula del ejemplo de referencia del spec de W3C DeviceOrientation.
+ */
+function computeCompassHeading(alpha: number, beta: number, gamma: number): number {
+  const alphaRad = (alpha * Math.PI) / 180;
+  const betaRad = (beta * Math.PI) / 180;
+  const gammaRad = (gamma * Math.PI) / 180;
+
+  const cA = Math.cos(alphaRad);
+  const sA = Math.sin(alphaRad);
+  const sB = Math.sin(betaRad);
+  const cG = Math.cos(gammaRad);
+  const sG = Math.sin(gammaRad);
+
+  const vx = -cA * sG - sA * sB * cG;
+  const vy = -sA * sG + cA * sB * cG;
+
+  let heading = Math.atan(vx / vy);
+  if (vy < 0) {
+    heading += Math.PI;
+  } else if (vx < 0) {
+    heading += 2 * Math.PI;
+  }
+
+  return (heading * 180) / Math.PI;
+}
+
+/**
  * Brújula del dispositivo vía DeviceOrientationEvent. Opt-in: no se suscribe hasta llamar a
  * `start()` desde un gesto del usuario (obligatorio en iOS Safari, que exige
  * `requestPermission()` disparado por un click, no se puede pedir de entrada).
@@ -51,10 +82,8 @@ export function useDeviceOrientation() {
       if (typeof event.webkitCompassHeading === 'number') {
         // iOS Safari ya entrega un rumbo absoluto (0 = norte), sin invertir.
         heading = event.webkitCompassHeading;
-      } else if (typeof event.alpha === 'number') {
-        // Android/Chrome: alpha crece en sentido antihorario desde el eje Y del dispositivo;
-        // el rumbo de brújula (horario desde el norte) es su complemento.
-        heading = (360 - event.alpha) % 360;
+      } else if (typeof event.alpha === 'number' && typeof event.beta === 'number' && typeof event.gamma === 'number') {
+        heading = computeCompassHeading(event.alpha, event.beta, event.gamma);
       }
 
       if (heading !== null) {
