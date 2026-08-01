@@ -73,7 +73,7 @@ export default function AntennaOrientationTool({ stations }: Props) {
               <span className="absolute bottom-1 text-xs text-text-secondary">S</span>
               <span className="absolute left-1 text-xs text-text-secondary">O</span>
               <div
-                className="h-16 w-1 origin-bottom rounded-full bg-brand-500"
+                className="absolute bottom-1/2 left-1/2 h-16 w-1 -ml-0.5 rounded-full bg-brand-500"
                 style={{ transform: `rotate(${azimuth}deg)`, transformOrigin: '50% 100%' }}
               />
             </div>

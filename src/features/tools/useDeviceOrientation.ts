@@ -10,6 +10,11 @@ export type DeviceOrientationState =
   | { status: 'active'; headingDegrees: number };
 
 const NO_DATA_TIMEOUT_MS = 3000;
+// Peso de cada lectura nueva en el promedio móvil circular (0-1): más bajo = más estable pero
+// con más retardo. Con el celular casi vertical (apuntando a una antena en el techo), alpha y
+// gamma quedan casi degenerados entre sí y una sola lectura ruidosa del sensor puede saltar
+// varias decenas de grados; sin este suavizado la flecha se ve "girar sola".
+const HEADING_SMOOTHING_WEIGHT = 0.15;
 
 interface DeviceOrientationEventIOS {
   webkitCompassHeading?: number;
@@ -60,6 +65,7 @@ export function useDeviceOrientation() {
   const handlerRef = useRef<((event: Event) => void) | null>(null);
   const eventNameRef = useRef<'deviceorientationabsolute' | 'deviceorientation' | null>(null);
   const noDataTimerRef = useRef<number | null>(null);
+  const smoothedVectorRef = useRef<{ sin: number; cos: number } | null>(null);
 
   const stop = useCallback(() => {
     if (handlerRef.current && eventNameRef.current) {
@@ -67,6 +73,7 @@ export function useDeviceOrientation() {
     }
     handlerRef.current = null;
     eventNameRef.current = null;
+    smoothedVectorRef.current = null;
     if (noDataTimerRef.current !== null) {
       window.clearTimeout(noDataTimerRef.current);
       noDataTimerRef.current = null;
@@ -91,7 +98,23 @@ export function useDeviceOrientation() {
           window.clearTimeout(noDataTimerRef.current);
           noDataTimerRef.current = null;
         }
-        setState({ status: 'active', headingDegrees: heading });
+
+        // Promedio móvil circular: se combinan los componentes seno/coseno (no el ángulo en
+        // grados directamente, porque un EMA lineal se rompe en el salto 359°→0°).
+        const rad = (heading * Math.PI) / 180;
+        const sample = { sin: Math.sin(rad), cos: Math.cos(rad) };
+        const prev = smoothedVectorRef.current;
+        smoothedVectorRef.current = prev
+          ? {
+              sin: prev.sin + HEADING_SMOOTHING_WEIGHT * (sample.sin - prev.sin),
+              cos: prev.cos + HEADING_SMOOTHING_WEIGHT * (sample.cos - prev.cos),
+            }
+          : sample;
+
+        const smoothedHeading =
+          (((Math.atan2(smoothedVectorRef.current.sin, smoothedVectorRef.current.cos) * 180) / Math.PI) + 360) % 360;
+
+        setState({ status: 'active', headingDegrees: smoothedHeading });
       }
     };
 
