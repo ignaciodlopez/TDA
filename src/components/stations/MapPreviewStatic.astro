@@ -9,13 +9,13 @@ const { stations } = Astro.props;
 
 // Proyección lineal simple (no cartográfica) del territorio continental argentino, solo para esta
 // vista previa decorativa. El mapa real y georreferenciado está en /mapa (MapLibre + OpenStreetMap).
-// El viewBox usa una proporción "panorámica" (no la relación de aspecto real de Argentina, que es
-// muy alargada norte-sur) para que encaje bien en una tarjeta ancha sin recortar contenido con
-// preserveAspectRatio="meet".
+// El viewBox respeta la proporción real del recuadro de Argentina (~20° de longitud x ~33° de
+// latitud): si no, la silueta de abajo queda achatada e irreconocible. Por eso el contenedor en
+// index.astro es angosto y alto (aspect-[3/5]) en vez de una tarjeta panorámica.
 const BOUNDS = { minLat: -55.1, maxLat: -21.8, minLng: -73.6, maxLng: -53.5 };
-const WIDTH = 640;
-const HEIGHT = 420;
-const PADDING = 40;
+const WIDTH = 300;
+const HEIGHT = 500;
+const PADDING = 18;
 
 function project(lat: number, lng: number) {
   const x = PADDING + ((lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng)) * (WIDTH - PADDING * 2);
@@ -29,10 +29,11 @@ const points = stations.map((station) => ({
   name: station.name,
 }));
 
-const COLUMNS = 8;
-const ROWS = 5;
-const verticalLines = Array.from({ length: COLUMNS + 1 }, (_, i) => (WIDTH / COLUMNS) * i);
-const horizontalLines = Array.from({ length: ROWS + 1 }, (_, i) => (HEIGHT / ROWS) * i);
+// Silueta de Argentina (continental + Tierra del Fuego), pre-proyectada con la misma `project()`
+// de arriba a partir de un polígono simplificado (fuente: johan/world.geo.json). Sin esto la
+// tarjeta era solo puntos sueltos sobre una grilla, sin ninguna referencia geográfica.
+const ARGENTINA_OUTLINE_PATH =
+  'M124.4,483.4L111.9,484.1L105.2,479.2L97.3,478.8L83.2,478.8L83.2,447.7L88.3,454.1L94.8,464.6L111.9,472.9L130.3,476.4L124.4,483.4Z M131.4,21.8L139.1,31.9L144.3,20.7L159.2,21.3L161.4,24.3L185.5,47L196.2,49.1L212.3,59.4L225.8,64.9L227.7,71L214.8,92.2L228,96L242.8,98.1L253.2,95.9L265.1,85.2L267.2,72.9L273.7,70.2L280.3,78.3L280,89.4L269,97.1L260.2,102.7L245.3,116.3L227.8,135.3L224.5,146.4L221,160.7L221.2,174.6L218.3,177.7L217.3,186.7L216.4,194L233.1,205.9L231.3,215.5L239.5,221.6L238.8,228.4L226.2,246.3L206.7,253.8L180.4,256.7L165.9,255.3L168.7,263.6L166,274L168.4,281L160.6,285.9L147.1,287.9L134.5,282.8L129.4,286.4L131.2,300.3L140.1,304.5L147.3,300.1L151.2,307.3L139.1,311.6L128.6,320.3L126.6,334.3L123.5,341.8L111.1,341.8L100.8,349L97.1,359.4L110,369.6L122.5,372.4L118,384.9L102.5,392.8L94,409.1L82,414.6L76.6,421.1L80.8,435.6L89.6,443.7L84,443L71.9,440.8L40.1,438.9L34.7,430.8L34.9,420.4L26.2,421.3L21.6,416.2L20.4,401.4L30.5,395.3L34.7,386.5L33.1,379.4L40.1,367.5L44.9,349.1L43.5,340.9L49.2,338.3L47.8,333L41.7,330.2L46.1,324.4L40.1,319.1L37.1,303L42.3,300.2L40.1,283.2L43.2,268.9L46.7,256.5L54.6,251.4L50.6,237.8L50.5,225L60.5,215.9L60.2,204.3L67.7,190.7L67.7,177.9L64.3,175.3L58.3,151.3L66.3,136.9L65.1,123.5L69.8,110.8L78.4,97.7L87.7,89.1L83.7,83.6L86.5,79.1L86.1,55.9L100.4,49L104.9,34.5L103.3,31L114.2,18.5L131.4,21.8Z';
 
 const DOT_FILL: Record<Station['status'], string> = {
   active: '#16a34a',
@@ -50,9 +51,14 @@ const DOT_FILL: Record<Station['status'], string> = {
     role="img"
     aria-label="Vista previa esquemática de estaciones de TDA en el mapa de Argentina"
   >
-    <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="var(--color-bg-secondary)" />
-    {verticalLines.map((x) => <line x1={x} y1="0" x2={x} y2={HEIGHT} stroke="var(--color-border)" stroke-width="1" />)}
-    {horizontalLines.map((y) => <line x1="0" y1={y} x2={WIDTH} y2={y} stroke="var(--color-border)" stroke-width="1" />)}
+    <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="var(--color-bg-primary)" />
+    <path
+      d={ARGENTINA_OUTLINE_PATH}
+      fill="var(--color-bg-secondary)"
+      stroke="var(--color-border)"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    />
     <rect
       x="1"
       y="1"
@@ -65,8 +71,8 @@ const DOT_FILL: Record<Station['status'], string> = {
     {
       points.map((point) => (
         <g>
-          <circle cx={point.x} cy={point.y} r={9} fill={DOT_FILL[point.status]} opacity="0.18" />
-          <circle cx={point.x} cy={point.y} r={5} fill={DOT_FILL[point.status]} stroke="white" stroke-width="1.5">
+          <circle cx={point.x} cy={point.y} r={4.5} fill={DOT_FILL[point.status]} opacity="0.18" />
+          <circle cx={point.x} cy={point.y} r={2.5} fill={DOT_FILL[point.status]} stroke="white" stroke-width="1">
             <title>{point.name}</title>
           </circle>
         </g>
