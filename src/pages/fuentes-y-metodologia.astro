@@ -1,0 +1,127 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import Alert from '@/components/common/Alert.astro';
+---
+
+<SiteLayout
+  title="Fuentes y metodología"
+  description="De dónde salen los datos de TDA Argentina, cómo se verifican, cómo se estima la cobertura y cómo reportar un error."
+  canonicalPath="/fuentes-y-metodologia"
+>
+  <Breadcrumbs items={[{ label: 'Fuentes y metodología' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="check-circle" title="Fuentes y metodología" />
+
+    <div class="prose-tda">
+      <Alert variant="demo" title="Estado actual de los datos">
+        Las 102 estaciones que se muestran hoy en el mapa y en las fichas son <strong>datos reales</strong>
+        de ubicación y ficha técnica (<code>isDemoData: false</code>), pero con nivel de verificación
+        <em>reportado por la comunidad</em>: salen de una tabla de Wikipedia que cita al portal de datos
+        abiertos de ARSAT, sin que se haya podido contrastar todavía de primera mano contra ARSAT, TDA o
+        ENACOM. Las señales (canales) que se listan por estación son únicamente los 4 multiplex
+        <strong>nacionales</strong> (canales 22 a 25); las señales locales propias de cada ciudad todavía no
+        están cargadas. Ver el detalle completo más abajo antes de usar estos datos para algo que dependa de
+        precisión (por ejemplo, orientar una antena).
+      </Alert>
+
+      <h2>De dónde salen los datos actuales</h2>
+      <p>
+        Al construir la primera versión del sitio se investigaron estas fuentes:
+      </p>
+      <ul>
+        <li>
+          El portal de datos abiertos de ENACOM (<a href="https://datosabiertos.enacom.gob.ar/" target="_blank" rel="noreferrer">datosabiertos.enacom.gob.ar</a>)
+          y su organización en <a href="https://datos.gob.ar/" target="_blank" rel="noreferrer">datos.gob.ar</a>:
+          publican datasets de mercado (telefonía, internet fija, TV por suscripción, portabilidad), pero no
+          se encontró un dataset descargable de estaciones transmisoras de TDA con coordenadas y datos
+          técnicos. El dataset "estaciones repetidoras autorizadas" que aparece en las búsquedas corresponde
+          a repetidoras de radioaficionados, no a la TDA.
+        </li>
+        <li>
+          El sitio oficial <a href="https://www.tda.gob.ar/" target="_blank" rel="noreferrer">tda.gob.ar</a>
+          (con su mapa de estaciones) y el portal de datos abiertos de ARSAT
+          (<a href="https://datos.arsat.com.ar/" target="_blank" rel="noreferrer">datos.arsat.com.ar</a>) no
+          fueron accesibles de forma directa desde el entorno donde se generó este sitio.
+        </li>
+        <li>
+          El artículo de Wikipedia <a href="https://es.wikipedia.org/wiki/Televisi%C3%B3n_digital_terrestre_en_Argentina#Ubicaci%C3%B3n_de_estaciones_transmisoras" target="_blank" rel="noreferrer">"Televisión digital terrestre en Argentina"</a>
+          incluye una tabla de ubicación de estaciones transmisoras que cita explícitamente, como fuente, una
+          visualización del portal de datos abiertos de ARSAT (archivada en agosto de 2017, con altas
+          agregadas hasta 2023). Esa tabla — 102 estaciones (EDT y UTT) en las 23 provincias y CABA, con
+          coordenadas, altura de mástil, marca y potencia del transmisor, y fecha de inicio de
+          transmisiones — es la fuente de los datos que se cargaron.
+        </li>
+      </ul>
+
+      <h2>Qué se cargó y qué falta</h2>
+      <p>Por cada estación real se cargó:</p>
+      <ul>
+        <li>Ubicación (coordenadas), provincia y localidad.</li>
+        <li>Altura de mástil y una estimación de potencia (ERP) leída del transmisor declarado.</li>
+        <li>
+          Las señales de los 4 multiplex <strong>nacionales</strong> (canales 22 a 25 — Encuentro, Pakapaka,
+          Televisión Pública HD, DeporTV HD, C5N, etc.), que se transmiten en toda la red de ARSAT.
+        </li>
+      </ul>
+      <p>Explícitamente no se cargó todavía:</p>
+      <ul>
+        <li>
+          Las señales <strong>locales</strong> propias de cada ciudad (canales con programación local, que
+          varían estación por estación) — la fuente las documenta, pero en tablas mucho más grandes y
+          difíciles de cruzar de forma confiable por localidad. Queda como trabajo pendiente.
+        </li>
+        <li>Polarización de la antena (no se pudo determinar con certeza el significado de las abreviaturas de la fuente, así que se dejó sin cargar en vez de adivinar).</li>
+        <li>Frecuencia exacta en MHz de cada señal.</li>
+        <li>Departamento y elevación sobre el nivel del mar.</li>
+      </ul>
+      <p>
+        La estación <strong>9 de Julio</strong> (Buenos Aires) tiene, en la fuente, coordenadas idénticas a
+        las de <strong>Vedia</strong> — probablemente un error de origen. Se cargó de todas formas, marcada
+        con nivel de verificación <em>pendiente de verificación</em> y una nota explicando la discrepancia,
+        en vez de omitirla o corregirla sin poder confirmarlo.
+      </p>
+
+      <h2>Cómo seguir mejorando los datos</h2>
+      <p>
+        El modelo de datos (definido en <code>src/content.config.ts</code> y documentado en el
+        <code>README</code> del proyecto) permite reemplazar cualquier registro de
+        <code>src/data/stations/</code> por una versión mejor verificada, validada con el mismo esquema. Una
+        estación pasa a <em>verificado mediante fuente oficial</em> cuando se contrasta directamente contra
+        ARSAT, TDA o ENACOM.
+      </p>
+
+      <h2>Cómo se estima la cobertura</h2>
+      <p>
+        Cuando una estación tiene potencia (ERP) declarada, se muestra un radio de cobertura estimado. Es
+        un cálculo aproximado, no una medición real ni una garantía de recepción. La recepción real puede
+        variar por relieve, edificios, árboles, altura y tipo de antena, cableado, conectores,
+        interferencias, condiciones atmosféricas y la configuración real de la estación transmisora.
+      </p>
+
+      <h2>Niveles de verificación</h2>
+      <ul>
+        <li><strong>Verificado mediante fuente oficial:</strong> confirmado directamente contra una fuente oficial (ENACOM, ARSAT, TDA).</li>
+        <li><strong>Confirmado mediante múltiples fuentes:</strong> coincide entre más de una fuente independiente.</li>
+        <li><strong>Reportado por la comunidad:</strong> proviene de un reporte de un usuario, sin verificación oficial. Nunca se presenta como dato oficial.</li>
+        <li><strong>Pendiente de verificación:</strong> cargado pero todavía no contrastado contra una fuente.</li>
+        <li><strong>Desactualizado:</strong> se sabe que puede haber cambiado desde la última verificación.</li>
+        <li><strong>Sin información suficiente:</strong> no hay datos suficientes para ese campo.</li>
+      </ul>
+
+      <h2>Fuentes contradictorias</h2>
+      <p>
+        Cuando dos fuentes no coincidan, el criterio es: mostrar la discrepancia en las observaciones de la
+        estación, priorizar la fuente oficial más reciente, indicar la fecha de cada fuente, y marcar el
+        dato como pendiente de verificación hasta resolverlo.
+      </p>
+
+      <h2>Cómo reportar un error o proponer una corrección</h2>
+      <p>
+        Por ahora no hay un sistema de reportes comunitarios automatizado (está planeado para una etapa
+        futura). Podés avisarnos igualmente desde la página <a href="/reportar-error">Reportar un error</a>.
+      </p>
+    </div>
+  </div>
+</SiteLayout>

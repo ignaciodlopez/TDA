@@ -1,0 +1,16 @@
+[
+  {
+    "id": "arsat",
+    "slug": "arsat",
+    "name": "ARSAT",
+    "type": "public",
+    "description": "Empresa Argentina de Soluciones Satelitales S.A., operador estatal de la infraestructura de la Televisión Digital Abierta en la mayor parte del país."
+  },
+  {
+    "id": "operador-local-ejemplo",
+    "slug": "operador-local-ejemplo",
+    "name": "Operador local (dato de ejemplo)",
+    "type": "private",
+    "description": "Nombre de ejemplo utilizado en los datos de demostración para representar un operador local o privado. No corresponde a una empresa real."
+  }
+]

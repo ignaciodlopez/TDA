@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+  label?: string;
+}
+
+const { class: className = 'h-4 w-full', label = 'Cargando…' } = Astro.props;
+---
+
+<div
+  role="status"
+  aria-label={label}
+  class={`animate-pulse rounded-md bg-surface motion-reduce:animate-none ${className}`}
+>
+  <span class="sr-only">{label}</span>
+</div>

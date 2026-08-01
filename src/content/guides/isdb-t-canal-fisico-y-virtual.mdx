@@ -1,0 +1,74 @@
+---
+title: 'ISDB-T: la diferencia entre canal físico y canal virtual'
+summary: 'Qué es un múltiplex, por qué el número de canal que ves en el televisor no coincide con la frecuencia real, y cómo se organiza técnicamente una señal de TDA.'
+category: 'contenido-tecnico'
+level: 'avanzado'
+readingTimeMinutes: 8
+updatedAt: '2026-06-01'
+author: 'Equipo TDA Argentina'
+heroImage: '../../assets/images/guides/isdb-t-canal-fisico-y-virtual.jpg'
+heroImageAlt: 'Torre de transmisión de televisión con múltiples antenas, vista desde abajo'
+heroImageCredit:
+  {
+    author: 'H. Zell',
+    license: 'CC BY-SA 3.0',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Cap_Leucate_-_TV-transmitter_01.jpg',
+  }
+sources:
+  - { name: 'ENACOM — Ente Nacional de Comunicaciones', url: 'https://www.enacom.gob.ar/' }
+relatedGuides: ['que-es-la-tda', 'como-se-estima-la-cobertura']
+---
+
+Uno de los puntos que más confunde a quien se acerca por primera vez a la TDA es que el número de canal
+que aparece en el televisor **no es la frecuencia real** de transmisión. Esto tiene una explicación técnica
+sencilla una vez que se entienden algunos conceptos.
+
+## Canal físico
+
+El **canal físico** es el canal de radiofrecuencia UHF real por el que se transmite la señal, asociado a
+una frecuencia específica en MHz. Es un recurso limitado y regulado: cada estación transmisora tiene
+asignado uno o más canales físicos.
+
+## Múltiplex
+
+Gracias a la compresión digital, dentro de un mismo canal físico caben **varias señales de televisión**
+al mismo tiempo, transmitidas juntas como un paquete de datos. A ese paquete se lo llama **múltiplex**.
+Es la razón por la cual, en digital, un solo canal físico puede traer un canal principal más un par de
+señales adicionales (por ejemplo, una señal de noticias y otra cultural).
+
+## Canal virtual
+
+El **canal virtual** es el número que efectivamente ves y seleccionás en el televisor (por ejemplo, 7.1
+o 22.3). No tiene relación directa con el canal físico ni con la frecuencia: es un número lógico que cada
+emisora elige, generalmente por continuidad con su identidad histórica (un canal que en analógico era
+"Canal 7" suele conservar el número virtual 7 en digital, aunque transmita físicamente por otra
+frecuencia UHF completamente distinta).
+
+## Frecuencia
+
+Cada canal físico corresponde a un rango de frecuencia en MHz dentro de la banda UHF. Es el dato que
+técnicos e instaladores usan para diagnosticar problemas de recepción o configurar equipos de medición,
+pero que rara vez necesita conocer un usuario final.
+
+## Señal
+
+Le llamamos **señal** a cada servicio de televisión individual dentro de un múltiplex: un canal de noticias,
+uno cultural, uno deportivo, etc. Varias señales comparten el mismo canal físico y la misma estación
+transmisora, pero cada una tiene su propio canal virtual.
+
+## Estación transmisora
+
+Es la instalación física (torre, antena transmisora, equipos de transmisión) desde donde se emite uno o
+más canales físicos, con sus respectivos múltiplex y señales. Podés consultar los datos de cada estación
+en su [ficha individual](/estaciones) o explorarlas todas en el [mapa interactivo](/mapa).
+
+## En resumen
+
+| Concepto | Qué es | Ejemplo (dato de ejemplo) |
+| --- | --- | --- |
+| Estación transmisora | El sitio físico de transmisión | Córdoba Centro |
+| Canal físico | El canal de radiofrecuencia real | 24 |
+| Frecuencia | La frecuencia asociada al canal físico | 498 MHz |
+| Múltiplex | El paquete de señales transmitido junto | — |
+| Canal virtual | El número que ves en el televisor | 24.1 |
+| Señal | Un servicio de TV individual dentro del múltiplex | Señal de ejemplo — Pública |

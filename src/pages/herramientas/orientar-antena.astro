@@ -1,0 +1,24 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import AntennaOrientationTool from '@/features/tools/AntennaOrientationTool';
+import { getAllStations } from '@/lib/data/stations';
+
+const stations = await getAllStations();
+---
+
+<SiteLayout
+  title="Orientar antena"
+  description="Calculá el azimut y el punto cardinal hacia el que tenés que orientar tu antena para apuntar a una estación de TDA."
+  canonicalPath="/herramientas/orientar-antena"
+>
+  <Breadcrumbs items={[{ label: 'Herramientas', href: '/herramientas' }, { label: 'Orientar antena' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="compass" title="Orientar antena">
+      Elegí tu ubicación y la estación a la que querés apuntar. Vas a obtener el azimut en grados y el
+      punto cardinal aproximado.
+    </PageHeader>
+    <AntennaOrientationTool client:only="react" stations={stations} />
+  </div>
+</SiteLayout>

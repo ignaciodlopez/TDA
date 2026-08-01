@@ -1,0 +1,30 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import StationsTable from '@/components/stations/StationsTable.astro';
+import { getAllStations } from '@/lib/data/stations';
+
+const stations = (await getAllStations()).sort((a, b) => a.name.localeCompare(b.name, 'es'));
+---
+
+<SiteLayout
+  title="Estaciones de TDA en Argentina"
+  description="Listado completo de estaciones transmisoras y repetidoras de la Televisión Digital Abierta en Argentina, con su estado, operador y señales disponibles."
+  canonicalPath="/estaciones"
+>
+  <Breadcrumbs items={[{ label: 'Estaciones' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="broadcast" title="Estaciones">
+      Listado de las {stations.length} estaciones cargadas hasta el momento. Entrá a la ficha de cada una para
+      ver todos sus datos técnicos, sus señales y su cobertura estimada.
+    </PageHeader>
+    {
+      stations.length > 0 ? (
+        <StationsTable stations={stations} />
+      ) : (
+        <p class="text-sm text-text-secondary">Todavía no hay estaciones cargadas.</p>
+      )
+    }
+  </div>
+</SiteLayout>

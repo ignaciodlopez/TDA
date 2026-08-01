@@ -1,0 +1,59 @@
+---
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+}
+
+const { title, description, canonicalPath } = Astro.props;
+const siteUrl = Astro.site ?? new URL('https://tda-argentina.example');
+const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, siteUrl);
+const titleSuffix = title.includes('TDA Argentina') ? '' : ' · TDA Argentina';
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
+    <title>{title}{titleSuffix}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content="TDA Argentina" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem('tda-theme');
+          const theme =
+            stored ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen">
+    <a
+      href="#contenido-principal"
+      class="bg-brand-500 sr-only z-50 rounded-md px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
+    >
+      Saltar al contenido principal
+    </a>
+    <slot />
+  </body>
+</html>

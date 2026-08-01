@@ -1,0 +1,24 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import DistanceCalculatorTool from '@/features/tools/DistanceCalculatorTool';
+import { getAllStations } from '@/lib/data/stations';
+
+const stations = await getAllStations();
+---
+
+<SiteLayout
+  title="Calcular distancia"
+  description="Calculá la distancia lineal y el azimut entre tu ubicación (o una localidad) y una estación de TDA."
+  canonicalPath="/herramientas/calcular-distancia"
+>
+  <Breadcrumbs items={[{ label: 'Herramientas', href: '/herramientas' }, { label: 'Calcular distancia' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="ruler" title="Calcular distancia">
+      Elegí un origen y una estación de destino para ver la distancia lineal, el azimut y los datos
+      disponibles de la estación.
+    </PageHeader>
+    <DistanceCalculatorTool client:only="react" stations={stations} />
+  </div>
+</SiteLayout>

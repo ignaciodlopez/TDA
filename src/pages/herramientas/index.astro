@@ -1,0 +1,61 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Card from '@/components/common/Card.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import Icon, { type IconName } from '@/components/common/Icon.astro';
+
+const tools: Array<{ icon: IconName; title: string; description: string; href: string }> = [
+  {
+    icon: 'pin',
+    title: 'Estación más cercana',
+    description: 'Encontrá qué estación transmisora tenés más cerca y cuántas señales podés recibir.',
+    href: '/herramientas/estacion-mas-cercana',
+  },
+  {
+    icon: 'compass',
+    title: 'Orientar antena',
+    description: 'Calculá la dirección exacta en grados hacia una estación transmisora.',
+    href: '/herramientas/orientar-antena',
+  },
+  {
+    icon: 'ruler',
+    title: 'Calcular distancia',
+    description: 'Medí la distancia lineal y el azimut entre un origen y una estación.',
+    href: '/herramientas/calcular-distancia',
+  },
+  {
+    icon: 'activity',
+    title: 'Diagnóstico de problemas',
+    description: 'Un asistente guiado para identificar por qué tu señal falla o se pixela.',
+    href: '/herramientas/diagnostico',
+  },
+];
+---
+
+<SiteLayout
+  title="Herramientas"
+  description="Herramientas para encontrar tu estación de TDA más cercana, orientar la antena, calcular distancias y diagnosticar problemas de recepción."
+  canonicalPath="/herramientas"
+>
+  <Breadcrumbs items={[{ label: 'Herramientas' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="sliders" title="Herramientas">
+      Cálculos orientativos a partir de tu ubicación (opcional) y de los datos de estaciones disponibles.
+      Ningún resultado reemplaza una prueba de señal real.
+    </PageHeader>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {
+        tools.map((tool) => (
+          <Card href={tool.href}>
+            <span class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-brand-500/10 text-brand-500">
+              <Icon name={tool.icon} size={18} />
+            </span>
+            <h2 class="mb-1.5 text-lg font-semibold text-text-primary">{tool.title}</h2>
+            <p class="text-sm text-text-secondary">{tool.description}</p>
+          </Card>
+        ))
+      }
+    </div>
+  </div>
+</SiteLayout>

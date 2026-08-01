@@ -1,0 +1,182 @@
+{
+  "id": "arg-villa-dolores",
+  "slug": "villa-dolores",
+  "name": "Villa Dolores",
+  "stationType": "transmitter",
+  "status": "active",
+  "operator": "arsat",
+  "isDemoData": false,
+  "location": {
+    "country": "Argentina",
+    "province": "Córdoba",
+    "department": null,
+    "city": "Villa Dolores",
+    "latitude": -31.9791604,
+    "longitude": -65.2370057,
+    "elevationMeters": null
+  },
+  "technicalData": {
+    "towerHeightMeters": 149.2,
+    "erpKw": 1,
+    "polarization": null,
+    "standard": "ISDB-T"
+  },
+  "signals": [
+    {
+      "physicalChannel": 22,
+      "virtualChannel": "22.1",
+      "name": "Encuentro",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 22,
+      "virtualChannel": "22.2",
+      "name": "Pakapaka",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 22,
+      "virtualChannel": "22.3",
+      "name": "Aunar",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 22,
+      "virtualChannel": "22.4",
+      "name": "CineAR HD",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 22,
+      "virtualChannel": "22.5",
+      "name": "TEC",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 23,
+      "virtualChannel": "23.1",
+      "name": "Televisión Pública HD",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 23,
+      "virtualChannel": "23.2",
+      "name": "Construir TV",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 24,
+      "virtualChannel": "24.1",
+      "name": "DeporTV HD",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 24,
+      "virtualChannel": "24.2",
+      "name": "Canal 26",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 24,
+      "virtualChannel": "24.3",
+      "name": "France 24 en Español",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 24,
+      "virtualChannel": "24.4",
+      "name": "Crónica",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 24,
+      "virtualChannel": "24.5",
+      "name": "Argentina 12",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 24,
+      "virtualChannel": "24.6",
+      "name": "El Destape HD",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 25,
+      "virtualChannel": "25.2",
+      "name": "C5N",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 25,
+      "virtualChannel": "25.3",
+      "name": "LN+",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 25,
+      "virtualChannel": "25.4",
+      "name": "Telesur",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 25,
+      "virtualChannel": "25.5",
+      "name": "RT en Español",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    },
+    {
+      "physicalChannel": 25,
+      "virtualChannel": "25.6",
+      "name": "Canal E",
+      "network": "nacional",
+      "frequencyMhz": null,
+      "status": "active"
+    }
+  ],
+  "coverage": {
+    "estimatedRadiusKm": 60,
+    "calculationMethod": "network-average-estimate"
+  },
+  "verification": {
+    "level": "community",
+    "sourceName": "Wikipedia — Televisión digital terrestre en Argentina (tabla que cita el Portal de Datos Abiertos de ARSAT, archivado en 2017)",
+    "sourceUrl": "https://es.wikipedia.org/wiki/Televisi%C3%B3n_digital_terrestre_en_Argentina#Ubicaci%C3%B3n_de_estaciones_transmisoras",
+    "lastVerifiedAt": "2026-07-31"
+  },
+  "observations": "Estación Digital de Transmisión (EDT) \"Villa Dolores\", operada por ARSAT. Inicio de transmisiones: 2012-07-23. Transmisor: NEC (1 kW). Señales: se listan los 4 multiplex nacionales (canales 22 a 25) que se transmiten en la red ARSAT; no se cargaron todavía las señales locales propias de esta localidad (ver Fuentes y metodología).",
+  "updatedAt": "2026-07-31"
+}

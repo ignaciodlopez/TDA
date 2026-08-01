@@ -1,0 +1,35 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import ChannelsExplorer from '@/features/channels/ChannelsExplorer';
+import { buildSignalRows } from '@/features/channels/signalRows';
+import { getAllStations } from '@/lib/data/stations';
+
+const stations = await getAllStations();
+const rows = buildSignalRows(stations);
+---
+
+<SiteLayout
+  title="Canales y señales de TDA"
+  description="Explorador de todas las señales de Televisión Digital Abierta cargadas: canal físico, canal virtual, frecuencia, red y estación, con filtros por provincia y estado."
+  canonicalPath="/canales"
+>
+  <Breadcrumbs items={[{ label: 'Canales' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="tv" title="Canales y señales">
+      <p class="mb-2">
+        Cada <strong>estación</strong> puede transmitir uno o más <strong>canales físicos</strong>, y dentro de
+        cada canal físico viajan una o varias <strong>señales</strong> agrupadas en un <strong>múltiplex</strong>,
+        cada una con su propio <strong>canal virtual</strong> (el número que se ve en el televisor) y su{' '}
+        <strong>frecuencia</strong> en MHz. Para el detalle completo de cómo se relacionan estos conceptos, mirá
+        la guía{' '}
+        <a href="/guias/isdb-t-canal-fisico-y-virtual" class="text-link underline underline-offset-2">
+          canal físico y canal virtual en ISDB-T
+        </a>.
+      </p>
+      <p class="text-sm">{rows.length} señales cargadas, de {stations.length} estaciones.</p>
+    </PageHeader>
+    <ChannelsExplorer client:load rows={rows} initialSort="channel" />
+  </div>
+</SiteLayout>

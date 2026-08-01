@@ -1,0 +1,274 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import StatusBadge from '@/components/common/StatusBadge.astro';
+import Button from '@/components/common/Button.astro';
+import Icon from '@/components/common/Icon.astro';
+import DemoDataNotice from '@/components/stations/DemoDataNotice.astro';
+import {
+  NOT_VERIFIED,
+  formatDateEs,
+  formatNullable,
+  STATION_TYPE_LABEL,
+  SIGNAL_NETWORK_LABEL,
+  POLARIZATION_LABEL,
+  CALCULATION_METHOD_LABEL,
+} from '@/components/stations/format';
+import { getAllStations, slugify } from '@/lib/data/stations';
+import { getOperatorById, getAllProvinces, getAllLocalities, resolveProvinceSlug } from '@/lib/data/geo';
+import { VERIFICATION_LEVEL_LABEL, type Station } from '@/types/station';
+import { stationPlaceJsonLd } from '@/lib/seo/structuredData';
+
+export async function getStaticPaths() {
+  const stations = await getAllStations();
+  return stations.map((station) => ({ params: { slug: station.slug }, props: { station } }));
+}
+
+interface Props {
+  station: Station;
+}
+
+const { station } = Astro.props;
+
+const operator = getOperatorById(station.operator);
+const province = getAllProvinces().find((p) => p.slug === resolveProvinceSlug(station.location.province));
+const locality = getAllLocalities().find((l) => l.slug === slugify(station.location.city));
+
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const jsonLd = stationPlaceJsonLd({
+  name: station.name,
+  url: new URL(`/estaciones/${station.slug}`, siteUrl).toString(),
+  latitude: station.location.latitude,
+  longitude: station.location.longitude,
+  addressLocality: station.location.city,
+  addressRegion: station.location.province,
+});
+---
+
+<SiteLayout
+  title={`${station.name} — Estación de TDA`}
+  description={`Ficha técnica de la estación ${station.name} (${station.location.city}, ${station.location.province}): canales, frecuencias, cobertura estimada y estado.`}
+  canonicalPath={`/estaciones/${station.slug}`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  <Breadcrumbs items={[{ label: 'Estaciones', href: '/estaciones' }, { label: station.name }]} />
+  <section class="relative -mx-5 mb-8 overflow-hidden border-b border-border bg-hero-glow sm:mx-[calc(50%-50vw)]">
+    <div class="container-page flex flex-wrap items-start justify-between gap-4 py-10 sm:py-12">
+      <div class="flex items-start gap-4">
+        <span class="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-500/10 text-brand-500">
+          <Icon name="broadcast" size={24} />
+        </span>
+        <div>
+          <StatusBadge status={station.status} />
+          <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-gradient-brand sm:text-4xl">{station.name}</h1>
+          <p class="text-text-secondary">
+            {STATION_TYPE_LABEL[station.stationType]} · {station.location.city}, {station.location.province}
+          </p>
+        </div>
+      </div>
+      <Button href={`/mapa?estacion=${station.id}`} variant="secondary">Ver en el mapa</Button>
+    </div>
+  </section>
+
+  <div class="container-page pb-16">
+    {
+      station.isDemoData && (
+        <div class="mb-6">
+          <DemoDataNotice />
+        </div>
+      )
+    }
+
+    <section class="mb-8 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-lg border border-border bg-bg-primary p-5 shadow-[var(--shadow-soft)]">
+        <h2 class="mb-3 text-lg font-semibold text-text-primary">Ubicación</h2>
+        <dl class="space-y-2.5 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Provincia</dt>
+            <dd class="text-right text-text-primary">
+              {province ? (
+                <a href={`/provincias/${province.slug}`} class="text-link hover:underline">
+                  {station.location.province}
+                </a>
+              ) : (
+                station.location.province
+              )}
+            </dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Departamento</dt>
+            <dd class="text-right text-text-primary">{station.location.department ?? NOT_VERIFIED}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Localidad</dt>
+            <dd class="text-right text-text-primary">
+              {locality ? (
+                <a href={`/localidades/${locality.slug}`} class="text-link hover:underline">
+                  {station.location.city}
+                </a>
+              ) : (
+                station.location.city
+              )}
+            </dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Latitud</dt>
+            <dd class="font-mono text-text-primary">{station.location.latitude}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Longitud</dt>
+            <dd class="font-mono text-text-primary">{station.location.longitude}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Altitud</dt>
+            <dd class="font-mono text-text-primary">
+              {formatNullable(station.location.elevationMeters, ' m')}
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="rounded-lg border border-border bg-bg-primary p-5 shadow-[var(--shadow-soft)]">
+        <h2 class="mb-3 text-lg font-semibold text-text-primary">Datos técnicos</h2>
+        <dl class="space-y-2.5 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Identificador</dt>
+            <dd class="font-mono text-text-primary">{station.id}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Tipo de estación</dt>
+            <dd class="text-text-primary">{STATION_TYPE_LABEL[station.stationType]}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Operador</dt>
+            <dd class="text-text-primary">{operator?.name ?? station.operator}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Altura de la torre</dt>
+            <dd class="font-mono text-text-primary">
+              {formatNullable(station.technicalData.towerHeightMeters, ' m')}
+            </dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Potencia ERP</dt>
+            <dd class="font-mono text-text-primary">{formatNullable(station.technicalData.erpKw, ' kW')}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Polarización</dt>
+            <dd class="text-text-primary">
+              {station.technicalData.polarization
+                ? POLARIZATION_LABEL[station.technicalData.polarization]
+                : NOT_VERIFIED}
+            </dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Estándar de transmisión</dt>
+            <dd class="font-mono text-text-primary">{station.technicalData.standard}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-3 text-lg font-semibold text-text-primary">Señales</h2>
+      <div class="overflow-x-auto rounded-lg border border-border">
+        <table class="w-full min-w-[640px] text-sm">
+          <thead class="bg-bg-secondary text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
+            <tr>
+              <th class="px-4 py-3">Señal</th>
+              <th class="px-4 py-3">Canal virtual</th>
+              <th class="px-4 py-3">Canal físico</th>
+              <th class="px-4 py-3">Frecuencia</th>
+              <th class="px-4 py-3">Red</th>
+              <th class="px-4 py-3">Estado</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            {
+              station.signals.map((signal) => (
+                <tr>
+                  <td class="px-4 py-3 text-text-primary">{signal.name}</td>
+                  <td class="px-4 py-3 font-mono text-text-primary">
+                    {signal.virtualChannel ?? NOT_VERIFIED}
+                  </td>
+                  <td class="px-4 py-3 font-mono text-text-primary">
+                    {signal.physicalChannel ?? NOT_VERIFIED}
+                  </td>
+                  <td class="px-4 py-3 font-mono text-text-primary">
+                    {signal.frequencyMhz !== null ? `${signal.frequencyMhz} MHz` : NOT_VERIFIED}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">{SIGNAL_NETWORK_LABEL[signal.network]}</td>
+                  <td class="px-4 py-3">
+                    <StatusBadge status={signal.status} />
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-lg border border-border bg-bg-primary p-5 shadow-[var(--shadow-soft)]">
+        <h2 class="mb-3 text-lg font-semibold text-text-primary">Cobertura estimada</h2>
+        <p class="mb-2 text-sm text-text-secondary">
+          {
+            station.coverage.estimatedRadiusKm !== null
+              ? `Radio estimado de ${station.coverage.estimatedRadiusKm} km. `
+              : `${NOT_VERIFIED}. `
+          }
+          Se trata de una estimación aproximada, no una garantía de recepción: la calidad real depende del
+          relieve, la distancia, los obstáculos y el equipo receptor.
+        </p>
+        <p class="text-xs text-text-secondary">
+          Método de cálculo: {CALCULATION_METHOD_LABEL[station.coverage.calculationMethod]}
+        </p>
+      </div>
+
+      <div class="rounded-lg border border-border bg-bg-primary p-5 shadow-[var(--shadow-soft)]">
+        <h2 class="mb-3 text-lg font-semibold text-text-primary">Verificación de los datos</h2>
+        <dl class="space-y-2.5 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Nivel</dt>
+            <dd class="text-right text-text-primary">{VERIFICATION_LEVEL_LABEL[station.verification.level]}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Fuente</dt>
+            <dd class="text-right text-text-primary">
+              {station.verification.sourceUrl ? (
+                <a
+                  href={station.verification.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="text-link hover:underline"
+                >
+                  {station.verification.sourceName}
+                </a>
+              ) : (
+                station.verification.sourceName
+              )}
+            </dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-text-secondary">Última verificación</dt>
+            <dd class="text-text-primary">{formatDateEs(station.verification.lastVerifiedAt)}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    {
+      station.observations && (
+        <section class="mb-8 rounded-lg border border-border bg-bg-primary p-5 shadow-[var(--shadow-soft)]">
+          <h2 class="mb-2 text-lg font-semibold text-text-primary">Observaciones</h2>
+          <p class="text-sm text-text-secondary">{station.observations}</p>
+        </section>
+      )
+    }
+
+    <p class="text-xs text-text-secondary">
+      Última actualización de esta ficha: {formatDateEs(station.updatedAt)}
+    </p>
+  </div>
+</SiteLayout>

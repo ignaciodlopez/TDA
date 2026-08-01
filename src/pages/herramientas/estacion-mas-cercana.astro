@@ -1,0 +1,24 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import NearestStationTool from '@/features/tools/NearestStationTool';
+import { getAllStations } from '@/lib/data/stations';
+
+const stations = await getAllStations();
+---
+
+<SiteLayout
+  title="Estación más cercana"
+  description="Encontrá la estación transmisora de TDA más cercana a tu ubicación, con distancia, dirección y señales disponibles."
+  canonicalPath="/herramientas/estacion-mas-cercana"
+>
+  <Breadcrumbs items={[{ label: 'Herramientas', href: '/herramientas' }, { label: 'Estación más cercana' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="pin" title="Estación más cercana">
+      Usá tu ubicación o elegí una localidad para ver qué estaciones transmisoras tenés más cerca. La
+      recepción real puede variar según el entorno: usá esto como punto de partida.
+    </PageHeader>
+    <NearestStationTool client:only="react" stations={stations} />
+  </div>
+</SiteLayout>

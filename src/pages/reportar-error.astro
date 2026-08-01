@@ -1,0 +1,135 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import Alert from '@/components/common/Alert.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+
+// Definir PUBLIC_CONTACT_EMAIL en .env antes de desplegar a producción (ver .env.example).
+const CONTACT_EMAIL = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'contacto@tda-argentina.example';
+---
+
+<SiteLayout
+  title="Reportar un error"
+  description="Cómo reportar un error o una inconsistencia en los datos de TDA Argentina."
+  canonicalPath="/reportar-error"
+>
+  <Breadcrumbs items={[{ label: 'Reportar un error' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="alert-triangle" title="Reportar un error">
+      Todavía no existe un sistema de reportes con moderación automática (está previsto para una etapa
+      futura del proyecto). Este formulario arma un correo con los datos que cargues; al enviarlo se abre
+      tu programa de correo para que lo confirmes vos.
+    </PageHeader>
+
+    <Alert variant="info" class="mb-6 max-w-xl">
+      Si vas a reportar una ubicación, no compartas la dirección exacta de tu vivienda: alcanza con la
+      localidad o el barrio.
+    </Alert>
+
+    <form id="report-error-form" class="max-w-xl space-y-4">
+      <div>
+        <label for="station" class="mb-1.5 block text-sm font-medium text-text-primary">
+          Estación relacionada (opcional)
+        </label>
+        <input
+          id="station"
+          name="station"
+          type="text"
+          class="w-full rounded-md border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary"
+          placeholder="Ej.: Córdoba Centro"
+        />
+      </div>
+
+      <div>
+        <label for="type" class="mb-1.5 block text-sm font-medium text-text-primary">Tipo de error</label>
+        <select id="type" name="type" class="w-full rounded-md border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary">
+          <option value="Dato incorrecto">Dato incorrecto</option>
+          <option value="Estación faltante">Estación faltante</option>
+          <option value="Enlace roto">Enlace roto</option>
+          <option value="Error en una guía o en el contenido">Error en una guía o en el contenido</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="description" class="mb-1.5 block text-sm font-medium text-text-primary">
+          Descripción
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          required
+          rows={5}
+          class="w-full rounded-md border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary"
+          placeholder="Contanos qué encontraste y, si podés, en qué página."
+        ></textarea>
+        <p class="mt-1 text-xs text-text-secondary" id="description-error" role="alert"></p>
+      </div>
+
+      <div>
+        <label for="email" class="mb-1.5 block text-sm font-medium text-text-primary">
+          Tu correo (opcional, por si queremos responderte)
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          class="w-full rounded-md border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary"
+          placeholder="tu@correo.com"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="rounded-md bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600"
+      >
+        Preparar correo de reporte
+      </button>
+    </form>
+  </div>
+
+  <script define:vars={{ CONTACT_EMAIL }} is:inline>
+    (function () {
+      const form = document.getElementById('report-error-form');
+      const descriptionError = document.getElementById('description-error');
+      if (!form) return;
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const data = new FormData(form);
+        const description = String(data.get('description') || '').trim();
+
+        if (!description) {
+          if (descriptionError) descriptionError.textContent = 'Contanos brevemente qué encontraste.';
+          const field = document.getElementById('description');
+          if (field) field.focus();
+          return;
+        }
+        if (descriptionError) descriptionError.textContent = '';
+
+        const station = String(data.get('station') || '').trim();
+        const type = String(data.get('type') || '');
+        const email = String(data.get('email') || '').trim();
+
+        const subject = `[TDA Argentina] Reporte: ${type}${station ? ' — ' + station : ''}`;
+        const bodyLines = [
+          `Tipo de error: ${type}`,
+          station ? `Estación relacionada: ${station}` : null,
+          '',
+          description,
+          email ? `\nCorreo de contacto: ${email}` : null,
+        ].filter(Boolean);
+
+        const mailto =
+          'mailto:' +
+          CONTACT_EMAIL +
+          '?subject=' +
+          encodeURIComponent(subject) +
+          '&body=' +
+          encodeURIComponent(bodyLines.join('\n'));
+
+        window.location.href = mailto;
+      });
+    })();
+  </script>
+</SiteLayout>

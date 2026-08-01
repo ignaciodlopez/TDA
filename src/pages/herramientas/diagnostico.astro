@@ -1,0 +1,21 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import ReceptionDiagnosticsTool from '@/features/tools/ReceptionDiagnosticsTool';
+---
+
+<SiteLayout
+  title="Diagnóstico de problemas de recepción"
+  description="Asistente guiado para identificar por qué falla la señal de TDA: sin canales, imagen pixelada, cortes o pérdida de canales."
+  canonicalPath="/herramientas/diagnostico"
+>
+  <Breadcrumbs items={[{ label: 'Herramientas', href: '/herramientas' }, { label: 'Diagnóstico de problemas' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="activity" title="Diagnóstico de problemas de recepción">
+      Elegí los síntomas que tenés y te sugerimos los pasos a revisar, ordenados de lo más simple a lo más
+      técnico.
+    </PageHeader>
+    <ReceptionDiagnosticsTool client:load />
+  </div>
+</SiteLayout>

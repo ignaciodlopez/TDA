@@ -1,0 +1,51 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import Card from '@/components/common/Card.astro';
+import Icon from '@/components/common/Icon.astro';
+import { getAllProvinces, getLocalitiesByProvince, resolveProvinceSlug } from '@/lib/data/geo';
+import { getAllStations } from '@/lib/data/stations';
+
+const provinces = getAllProvinces().sort((a, b) => a.name.localeCompare(b.name, 'es'));
+const stations = await getAllStations();
+
+const stationCounts = new Map<string, number>();
+for (const station of stations) {
+  const key = resolveProvinceSlug(station.location.province);
+  stationCounts.set(key, (stationCounts.get(key) ?? 0) + 1);
+}
+---
+
+<SiteLayout
+  title="Provincias"
+  description="Elegí una provincia argentina para ver sus localidades y las estaciones de TDA cargadas en cada una."
+  canonicalPath="/provincias"
+>
+  <Breadcrumbs items={[{ label: 'Provincias' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="map" title="Provincias">
+      Elegí una provincia para ver sus localidades y las estaciones de TDA cargadas en cada una.
+    </PageHeader>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        provinces.map((province) => {
+          const localityCount = getLocalitiesByProvince(province.id).length;
+          const stationCount = stationCounts.get(province.slug) ?? 0;
+          return (
+            <Card href={`/provincias/${province.slug}`}>
+              <span class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-brand-500/10 text-brand-500">
+                <Icon name="map" size={18} />
+              </span>
+              <h2 class="mb-1 font-semibold text-text-primary">{province.name}</h2>
+              <p class="text-sm text-text-secondary">
+                {stationCount} {stationCount === 1 ? 'estación' : 'estaciones'} · {localityCount}{' '}
+                {localityCount === 1 ? 'localidad' : 'localidades'}
+              </p>
+            </Card>
+          );
+        })
+      }
+    </div>
+  </div>
+</SiteLayout>

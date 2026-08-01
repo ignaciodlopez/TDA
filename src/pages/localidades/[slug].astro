@@ -1,0 +1,65 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import StationsTable from '@/components/stations/StationsTable.astro';
+import { getAllLocalities, getAllProvinces } from '@/lib/data/geo';
+import { getStationsByLocality } from '@/lib/data/stations';
+import type { Locality } from '@/types/geo';
+
+export async function getStaticPaths() {
+  const localities = getAllLocalities();
+  return localities.map((locality) => ({ params: { slug: locality.slug }, props: { locality } }));
+}
+
+interface Props {
+  locality: Locality;
+}
+
+const { locality } = Astro.props;
+
+const province = getAllProvinces().find((p) => p.id === locality.provinceId);
+const stations = (await getStationsByLocality(locality.slug)).sort((a, b) =>
+  a.name.localeCompare(b.name, 'es'),
+);
+---
+
+<SiteLayout
+  title={`Estaciones de TDA en ${locality.name}`}
+  description={`Estaciones de Televisión Digital Abierta cargadas para ${locality.name}${province ? `, ${province.name}` : ''}.`}
+  canonicalPath={`/localidades/${locality.slug}`}
+>
+  <Breadcrumbs
+    items={[
+      { label: 'Provincias', href: '/provincias' },
+      ...(province ? [{ label: province.name, href: `/provincias/${province.slug}` }] : []),
+      { label: locality.name },
+    ]}
+  />
+  <div class="container-page pb-16">
+    <PageHeader icon="pin" title={locality.name}>
+      {province && (
+        <p>
+          Provincia:{' '}
+          <a href={`/provincias/${province.slug}`} class="text-link hover:underline">
+            {province.name}
+          </a>
+        </p>
+      )}
+      {locality.department && <p class="text-sm">Departamento: {locality.department}</p>}
+    </PageHeader>
+
+    <section>
+      <h2 class="mb-3 text-xl font-semibold text-text-primary">Estaciones</h2>
+      {
+        stations.length > 0 ? (
+          <StationsTable stations={stations} showLocality={false} />
+        ) : (
+          <p class="text-sm text-text-secondary">
+            Todavía no hay estaciones de ejemplo cargadas para esta localidad.
+          </p>
+        )
+      }
+    </section>
+  </div>
+</SiteLayout>

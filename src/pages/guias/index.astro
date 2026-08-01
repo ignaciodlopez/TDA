@@ -1,0 +1,73 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import Icon from '@/components/common/Icon.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import {
+  GUIDE_CATEGORY_ICON,
+  GUIDE_CATEGORY_LABEL,
+  GUIDE_CATEGORY_ORDER,
+  GUIDE_LEVEL_LABEL,
+  GUIDE_LEVEL_ORDER,
+} from '@/types/guide';
+
+const guides = await getCollection('guides');
+
+// Solo categorías que efectivamente tienen guías cargadas, en el orden de lo más básico a lo más
+// técnico (ver GUIDE_CATEGORY_ORDER), no el orden alfabético de archivo en el que las devuelve la
+// content collection.
+const presentCategories = new Set(guides.map((g) => g.data.category));
+const categories = GUIDE_CATEGORY_ORDER.filter((category) => presentCategories.has(category));
+---
+
+<SiteLayout
+  title="Guías"
+  description="Guías prácticas sobre la Televisión Digital Abierta en Argentina: primeros pasos, instalación, solución de problemas y contenido técnico."
+  canonicalPath="/guias"
+>
+  <Breadcrumbs items={[{ label: 'Guías' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="book" title="Guías">
+      Contenido organizado por nivel, desde lo básico para empezar hasta el detalle técnico del estándar
+      ISDB-T.
+    </PageHeader>
+
+    {
+      categories.map((category) => (
+        <section class="mb-10">
+          <div class="mb-4 flex items-center gap-3">
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-500/10 text-brand-500">
+              <Icon name={GUIDE_CATEGORY_ICON[category]} size={18} />
+            </span>
+            <h2 class="text-lg font-semibold text-text-primary">{GUIDE_CATEGORY_LABEL[category]}</h2>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {guides
+              .filter((g) => g.data.category === category)
+              .sort((a, b) => GUIDE_LEVEL_ORDER[a.data.level] - GUIDE_LEVEL_ORDER[b.data.level])
+              .map((guide) => (
+                <a href={`/guias/${guide.id}`} class="card-elevated block overflow-hidden p-0">
+                  <Image
+                    src={guide.data.heroImage}
+                    alt={guide.data.heroImageAlt}
+                    width={480}
+                    height={270}
+                    class="h-36 w-full object-cover"
+                  />
+                  <div class="p-5">
+                    <p class="mb-1.5 text-xs font-medium uppercase tracking-wide text-link">
+                      {GUIDE_LEVEL_LABEL[guide.data.level]} · {guide.data.readingTimeMinutes} min
+                    </p>
+                    <h3 class="mb-1.5 font-semibold text-text-primary">{guide.data.title}</h3>
+                    <p class="text-sm text-text-secondary">{guide.data.summary}</p>
+                  </div>
+                </a>
+              ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</SiteLayout>

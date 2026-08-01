@@ -1,0 +1,19 @@
+[
+  { "id": "caba", "slug": "ciudad-autonoma-de-buenos-aires", "name": "Ciudad Autónoma de Buenos Aires", "provinceId": "caba", "department": null, "postalCode": "C1000", "latitude": -34.6037, "longitude": -58.3816 },
+  { "id": "la-plata", "slug": "la-plata", "name": "La Plata", "provinceId": "buenos-aires", "department": "La Plata", "postalCode": "B1900", "latitude": -34.9215, "longitude": -57.9545 },
+  { "id": "mar-del-plata", "slug": "mar-del-plata", "name": "Mar del Plata", "provinceId": "buenos-aires", "department": "General Pueyrredón", "postalCode": "B7600", "latitude": -38.0055, "longitude": -57.5426 },
+  { "id": "bahia-blanca", "slug": "bahia-blanca", "name": "Bahía Blanca", "provinceId": "buenos-aires", "department": "Bahía Blanca", "postalCode": "B8000", "latitude": -38.7183, "longitude": -62.2663 },
+  { "id": "cordoba-capital", "slug": "cordoba", "name": "Córdoba", "provinceId": "cordoba", "department": "Capital", "postalCode": "X5000", "latitude": -31.4201, "longitude": -64.1888 },
+  { "id": "rio-cuarto", "slug": "rio-cuarto", "name": "Río Cuarto", "provinceId": "cordoba", "department": "Río Cuarto", "postalCode": "X5800", "latitude": -33.1232, "longitude": -64.3499 },
+  { "id": "rosario", "slug": "rosario", "name": "Rosario", "provinceId": "santa-fe", "department": "Rosario", "postalCode": "S2000", "latitude": -32.9468, "longitude": -60.6393 },
+  { "id": "santa-fe-capital", "slug": "santa-fe", "name": "Santa Fe", "provinceId": "santa-fe", "department": "La Capital", "postalCode": "S3000", "latitude": -31.6333, "longitude": -60.7 },
+  { "id": "mendoza-capital", "slug": "mendoza", "name": "Mendoza", "provinceId": "mendoza", "department": "Capital", "postalCode": "M5500", "latitude": -32.8895, "longitude": -68.8458 },
+  { "id": "san-miguel-de-tucuman", "slug": "san-miguel-de-tucuman", "name": "San Miguel de Tucumán", "provinceId": "tucuman", "department": "Capital", "postalCode": "T4000", "latitude": -26.8241, "longitude": -65.2226 },
+  { "id": "salta-capital", "slug": "salta", "name": "Salta", "provinceId": "salta", "department": "Capital", "postalCode": "A4400", "latitude": -24.7859, "longitude": -65.4117 },
+  { "id": "san-salvador-de-jujuy", "slug": "san-salvador-de-jujuy", "name": "San Salvador de Jujuy", "provinceId": "jujuy", "department": "Doctor Manuel Belgrano", "postalCode": "Y4600", "latitude": -24.1858, "longitude": -65.2995 },
+  { "id": "resistencia", "slug": "resistencia", "name": "Resistencia", "provinceId": "chaco", "department": "San Fernando", "postalCode": "H3500", "latitude": -27.4514, "longitude": -58.9867 },
+  { "id": "posadas", "slug": "posadas", "name": "Posadas", "provinceId": "misiones", "department": "Capital", "postalCode": "N3300", "latitude": -27.3621, "longitude": -55.9008 },
+  { "id": "neuquen-capital", "slug": "neuquen", "name": "Neuquén", "provinceId": "neuquen", "department": "Confluencia", "postalCode": "Q8300", "latitude": -38.9516, "longitude": -68.0591 },
+  { "id": "comodoro-rivadavia", "slug": "comodoro-rivadavia", "name": "Comodoro Rivadavia", "provinceId": "chubut", "department": "Escalante", "postalCode": "U9000", "latitude": -45.8641, "longitude": -67.4966 },
+  { "id": "ushuaia", "slug": "ushuaia", "name": "Ushuaia", "provinceId": "tierra-del-fuego", "department": "Ushuaia", "postalCode": "V9410", "latitude": -54.8019, "longitude": -68.303 }
+]

@@ -1,0 +1,48 @@
+---
+import { breadcrumbJsonLd } from '@/lib/seo/structuredData';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const jsonLd = breadcrumbJsonLd([
+  { name: 'Inicio', url: new URL('/', siteUrl).toString() },
+  ...items.map((item) => ({
+    name: item.label,
+    url: new URL(item.href ?? Astro.url.pathname, siteUrl).toString(),
+  })),
+]);
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+<nav aria-label="Ruta de navegación" class="container-page py-4">
+  <ol class="flex flex-wrap items-center gap-1.5 text-sm text-text-secondary">
+    <li>
+      <a href="/" class="hover:text-link">Inicio</a>
+    </li>
+    {
+      items.map((item, index) => (
+        <>
+          <li aria-hidden="true">/</li>
+          <li aria-current={index === items.length - 1 ? 'page' : undefined}>
+            {item.href ? (
+              <a href={item.href} class="hover:text-link">
+                {item.label}
+              </a>
+            ) : (
+              <span class="text-text-primary">{item.label}</span>
+            )}
+          </li>
+        </>
+      ))
+    }
+  </ol>
+</nav>

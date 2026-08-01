@@ -1,0 +1,22 @@
+---
+import {
+  STATION_STATUS_BADGE_CLASSES,
+  STATION_STATUS_DOT_CLASSES,
+  STATION_STATUS_LABEL,
+  type StationStatus,
+} from '@/types/station';
+
+interface Props {
+  status: StationStatus;
+  class?: string;
+}
+
+const { status, class: className = '' } = Astro.props;
+---
+
+<span
+  class={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${STATION_STATUS_BADGE_CLASSES[status]} ${className}`}
+>
+  <span class={`h-1.5 w-1.5 rounded-full ${STATION_STATUS_DOT_CLASSES[status]}`} aria-hidden="true"></span>
+  {STATION_STATUS_LABEL[status]}
+</span>

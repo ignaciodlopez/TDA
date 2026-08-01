@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tda-argentina.example/sitemap-index.xml

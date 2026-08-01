@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/common/Header.astro';
+import MapExplorer from '@/features/map/MapExplorer';
+import { getAllStations } from '@/lib/data/stations';
+
+const stations = await getAllStations();
+---
+
+<BaseLayout
+  title="Mapa de estaciones de TDA"
+  description="Mapa interactivo de estaciones transmisoras y repetidoras de la Televisión Digital Abierta en Argentina. Buscá por localidad, provincia o nombre de estación."
+  canonicalPath="/mapa"
+>
+  <link slot="head" rel="preconnect" href="https://tiles.openfreemap.org" />
+  <Header />
+  <div id="contenido-principal">
+    <noscript>
+      <div class="container-page py-8">
+        <p class="text-text-secondary">
+          El mapa interactivo necesita JavaScript. Mientras tanto, podés consultar el
+          <a href="/estaciones" class="text-link underline">listado de estaciones</a> en formato de texto.
+        </p>
+      </div>
+    </noscript>
+    <MapExplorer client:only="react" stations={stations} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "que-es-tda",
+    "question": "¿Qué es la TDA?",
+    "answer": "Es el sistema de Televisión Digital Abierta y gratuita de Argentina, basado en el estándar ISDB-T. Reemplaza a la televisión analógica con mejor calidad de imagen y sonido, sin necesidad de pagar un abono.",
+    "category": "general"
+  },
+  {
+    "id": "necesito-pagar",
+    "question": "¿Tengo que pagar algo para ver la TDA?",
+    "answer": "No. La TDA es un servicio de televisión abierta y gratuita. Solo necesitás el equipamiento (televisor compatible o decodificador, y antena) para recibirla.",
+    "category": "general"
+  },
+  {
+    "id": "tv-compatible",
+    "question": "¿Cómo sé si mi televisor es compatible con la TDA?",
+    "answer": "Revisá si tu televisor tiene sintonizador digital ISDB-T integrado, generalmente indicado en el manual o en el menú de canales como 'sintonización digital' o 'DTV'. Si es un televisor antiguo, vas a necesitar un decodificador externo.",
+    "category": "general"
+  },
+  {
+    "id": "que-antena-necesito",
+    "question": "¿Qué antena necesito para ver la TDA?",
+    "answer": "Depende de tu distancia a la estación transmisora más cercana y de los obstáculos del entorno. La guía Cómo elegir una antena para la TDA repasa cuándo alcanza con una interior y cuándo conviene una exterior direccional.",
+    "category": "instalacion"
+  },
+  {
+    "id": "antena-interior-o-exterior",
+    "question": "¿Antena interior o exterior?",
+    "answer": "Una antena interior puede alcanzar si estás cerca de la estación transmisora y sin grandes obstáculos. Cuanto mayor sea la distancia o haya más edificios, árboles o relieve de por medio, más conviene una antena exterior direccional, idealmente elevada.",
+    "category": "instalacion"
+  },
+  {
+    "id": "como-orientar-antena",
+    "question": "¿Cómo oriento la antena hacia la estación correcta?",
+    "answer": "La herramienta 'Orientar antena' calcula el azimut (la dirección en grados) desde tu ubicación hacia la estación elegida. Con ese dato podés orientar una antena direccional y ajustar la posición mirando el medidor de señal del televisor.",
+    "category": "instalacion"
+  },
+  {
+    "id": "no-aparecen-canales",
+    "question": "¿Por qué no aparece ningún canal después de hacer la búsqueda automática?",
+    "answer": "Las causas más comunes son: estar fuera del área de cobertura estimada, un problema de cableado o conexión, o una antena no apta para la banda UHF. La guía de diagnóstico de problemas ordena los pasos a revisar de lo más simple a lo más técnico.",
+    "category": "recepcion"
+  },
+  {
+    "id": "imagen-pixelada",
+    "question": "¿Por qué la imagen se pixela o se corta?",
+    "answer": "Generalmente indica una señal débil o inestable: puede deberse a la orientación de la antena, obstáculos en el entorno, cableado en mal estado o el uso de divisores que reducen la potencia disponible.",
+    "category": "recepcion"
+  },
+  {
+    "id": "senal-solo-a-veces",
+    "question": "¿Por qué la señal anda bien en algunos horarios y en otros no?",
+    "answer": "Puede deberse a interferencias de otros equipos electrónicos, condiciones atmosféricas puntuales, o variaciones de uso de la red eléctrica en tu zona. Es uno de los síntomas más difíciles de diagnosticar a distancia.",
+    "category": "recepcion"
+  },
+  {
+    "id": "divisor-empeoro-senal",
+    "question": "¿Por qué la señal empeoró después de instalar un divisor?",
+    "answer": "Un divisor (splitter) reparte la potencia de la señal entre varias salidas. Cuantos más televisores conectes, menos señal le llega a cada uno. Si la señal ya era débil, un divisor puede hacer que directamente se pierda.",
+    "category": "recepcion"
+  },
+  {
+    "id": "canal-fisico-vs-virtual",
+    "question": "¿Cuál es la diferencia entre canal físico y canal virtual?",
+    "answer": "El canal físico es la frecuencia de radiofrecuencia real por la que se transmite. El canal virtual es el número que ves en el televisor (por ejemplo, 7.1), que no coincide necesariamente con el canal físico. Hay más detalle en la guía técnica sobre ISDB-T.",
+    "category": "canales"
+  },
+  {
+    "id": "que-es-multiplex",
+    "question": "¿Qué es un múltiplex?",
+    "answer": "Es el paquete de señales de televisión que se transmiten juntas dentro de un mismo canal físico, gracias a la compresión digital. Por eso un solo canal físico puede traer varias señales al mismo tiempo.",
+    "category": "canales"
+  },
+  {
+    "id": "de-donde-salen-los-datos",
+    "question": "¿De dónde salen los datos de las estaciones que muestra el sitio?",
+    "answer": "La ubicación y ficha técnica de las estaciones salen de una tabla que cita al portal de datos abiertos de ARSAT, sin que se haya podido verificar todavía de forma directa contra ARSAT, TDA o ENACOM (nivel de verificación 'reportado por la comunidad'). El detalle completo, qué se cargó y qué falta está en la página de Fuentes y metodología.",
+    "category": "datos"
+  },
+  {
+    "id": "como-reporto-un-error",
+    "question": "¿Cómo reporto un error en los datos?",
+    "answer": "Podés usar la página 'Reportar error' para avisarnos. Todavía no hay un sistema de reportes comunitarios con moderación automática; por ahora los reportes se reciben y revisan manualmente.",
+    "category": "datos"
+  },
+  {
+    "id": "cobertura-garantizada",
+    "question": "¿La cobertura que muestra el mapa está garantizada?",
+    "answer": "No. La cobertura mostrada es una estimación basada en la potencia declarada de cada estación. La recepción real puede variar por relieve, edificios, árboles, altura y tipo de antena, cableado, interferencias y condiciones atmosféricas, entre otros factores.",
+    "category": "datos"
+  }
+]

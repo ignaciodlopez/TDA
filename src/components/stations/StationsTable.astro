@@ -1,0 +1,59 @@
+---
+import type { Station } from '@/types/station';
+import { getOperatorById } from '@/lib/data/geo';
+import StatusBadge from '@/components/common/StatusBadge.astro';
+
+interface Props {
+  stations: Station[];
+  showProvince?: boolean;
+  showLocality?: boolean;
+}
+
+const { stations, showProvince = true, showLocality = true } = Astro.props;
+---
+
+<div class="overflow-x-auto rounded-lg border border-border">
+  <table class="w-full min-w-[720px] text-sm">
+    <thead class="bg-bg-secondary text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
+      <tr>
+        <th class="px-4 py-3">Estación</th>
+        {showProvince && <th class="px-4 py-3">Provincia</th>}
+        {showLocality && <th class="px-4 py-3">Localidad</th>}
+        <th class="px-4 py-3">Operador</th>
+        <th class="px-4 py-3">Estado</th>
+        <th class="px-4 py-3 text-right">Señales</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-border">
+      {
+        stations.map((station) => {
+          const operator = getOperatorById(station.operator);
+          return (
+            <tr>
+              <td class="px-4 py-3">
+                <a
+                  href={`/estaciones/${station.slug}`}
+                  class="font-medium text-text-primary hover:text-link hover:underline"
+                >
+                  {station.name}
+                </a>
+                {station.isDemoData && (
+                  <span class="ml-2 rounded bg-status-warn-bg px-1.5 py-0.5 text-[11px] font-medium text-status-warn-text">
+                    Demo
+                  </span>
+                )}
+              </td>
+              {showProvince && <td class="px-4 py-3 text-text-secondary">{station.location.province}</td>}
+              {showLocality && <td class="px-4 py-3 text-text-secondary">{station.location.city}</td>}
+              <td class="px-4 py-3 text-text-secondary">{operator?.name ?? station.operator}</td>
+              <td class="px-4 py-3">
+                <StatusBadge status={station.status} />
+              </td>
+              <td class="px-4 py-3 text-right font-mono text-text-secondary">{station.signals.length}</td>
+            </tr>
+          );
+        })
+      }
+    </tbody>
+  </table>
+</div>

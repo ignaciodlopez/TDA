@@ -1,0 +1,50 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import { getCollection } from 'astro:content';
+import { faqPageJsonLd } from '@/lib/seo/structuredData';
+
+const faqs = await getCollection('faq');
+
+const CATEGORY_LABEL: Record<string, string> = {
+  general: 'General',
+  instalacion: 'Instalación',
+  recepcion: 'Recepción',
+  canales: 'Canales',
+  datos: 'Datos del sitio',
+};
+
+const categories = Array.from(new Set(faqs.map((f) => f.data.category)));
+const jsonLd = faqPageJsonLd(faqs.map((f) => ({ question: f.data.question, answer: f.data.answer })));
+---
+
+<SiteLayout
+  title="Preguntas frecuentes"
+  description="Respuestas a las preguntas más frecuentes sobre la Televisión Digital Abierta en Argentina: instalación, recepción, canales y datos del sitio."
+  canonicalPath="/preguntas-frecuentes"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  <Breadcrumbs items={[{ label: 'Preguntas frecuentes' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="help-circle" title="Preguntas frecuentes" />
+
+    {
+      categories.map((category) => (
+        <section class="mb-8">
+          <h2 class="mb-3 text-lg font-semibold text-text-primary">{CATEGORY_LABEL[category] ?? category}</h2>
+          <div class="space-y-2">
+            {faqs
+              .filter((f) => f.data.category === category)
+              .map((faq) => (
+                <details class="rounded-md border border-border p-4">
+                  <summary class="cursor-pointer font-medium text-text-primary">{faq.data.question}</summary>
+                  <p class="mt-2 text-sm text-text-secondary">{faq.data.answer}</p>
+                </details>
+              ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</SiteLayout>

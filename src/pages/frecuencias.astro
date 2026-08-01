@@ -1,0 +1,47 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import ChannelsExplorer from '@/features/channels/ChannelsExplorer';
+import Alert from '@/components/common/Alert.astro';
+import { buildSignalRows } from '@/features/channels/signalRows';
+import { getAllStations } from '@/lib/data/stations';
+
+const stations = await getAllStations();
+const rows = buildSignalRows(stations);
+const rowsWithFrequency = rows.filter((row) => row.frequencyMhz !== null).length;
+---
+
+<SiteLayout
+  title="Frecuencias de TDA"
+  description="Listado de señales de Televisión Digital Abierta ordenado por frecuencia en MHz, con filtros por provincia y estado."
+  canonicalPath="/frecuencias"
+>
+  <Breadcrumbs items={[{ label: 'Frecuencias' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="tv" title="Frecuencias">
+      La misma información que en{' '}
+      <a href="/canales" class="text-link underline underline-offset-2">
+        el explorador de canales
+      </a>, ordenada por <strong>frecuencia</strong> (MHz) en vez de por canal virtual. Para entender la
+      diferencia entre canal físico, canal virtual y frecuencia, mirá la guía{' '}
+      <a href="/guias/isdb-t-canal-fisico-y-virtual" class="text-link underline underline-offset-2">
+        canal físico y canal virtual en ISDB-T
+      </a>.
+    </PageHeader>
+    {
+      rowsWithFrequency === 0 && (
+        <Alert variant="info" title="Todavía no hay frecuencias cargadas" class="mb-6">
+          Ninguna de las señales cargadas tiene su frecuencia en MHz verificada (ver{' '}
+          <a href="/fuentes-y-metodologia" class="text-link underline underline-offset-2">
+            Fuentes y metodología
+          </a>
+          ), así que el orden de abajo no refleja un orden real por frecuencia todavía. Mientras tanto,
+          usá <a href="/canales" class="text-link underline underline-offset-2">el explorador de canales</a>{' '}
+          para buscar por canal físico o virtual.
+        </Alert>
+      )
+    }
+    <ChannelsExplorer client:load rows={rows} initialSort="frequency" />
+  </div>
+</SiteLayout>

@@ -1,0 +1,67 @@
+---
+const columns = [
+  {
+    title: 'Explorar',
+    links: [
+      { label: 'Mapa interactivo', href: '/mapa' },
+      { label: 'Estaciones', href: '/estaciones' },
+      { label: 'Canales y frecuencias', href: '/canales' },
+      { label: 'Provincias', href: '/provincias' },
+    ],
+  },
+  {
+    title: 'Herramientas',
+    links: [
+      { label: 'Estación más cercana', href: '/herramientas/estacion-mas-cercana' },
+      { label: 'Orientar antena', href: '/herramientas/orientar-antena' },
+      { label: 'Calcular distancia', href: '/herramientas/calcular-distancia' },
+      { label: 'Diagnóstico de problemas', href: '/herramientas/diagnostico' },
+    ],
+  },
+  {
+    title: 'Recursos',
+    links: [
+      { label: 'Guías', href: '/guias' },
+      { label: 'Recursos y normativa', href: '/recursos' },
+      { label: 'Preguntas frecuentes', href: '/preguntas-frecuentes' },
+      { label: 'Fuentes y metodología', href: '/fuentes-y-metodologia' },
+    ],
+  },
+  {
+    title: 'Proyecto',
+    links: [
+      { label: 'Acerca del proyecto', href: '/acerca-del-proyecto' },
+      { label: 'Contacto', href: '/contacto' },
+      { label: 'Reportar un error', href: '/reportar-error' },
+    ],
+  },
+];
+---
+
+<footer class="border-t border-border bg-bg-secondary">
+  <div class="container-page grid grid-cols-2 gap-8 py-12 sm:grid-cols-4">
+    {
+      columns.map((column) => (
+        <div>
+          <h2 class="mb-3 text-sm font-semibold text-text-primary">{column.title}</h2>
+          <ul class="space-y-2">
+            {column.links.map((link) => (
+              <li>
+                <a href={link.href} class="text-sm text-text-secondary hover:text-link">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+  <div class="container-page border-t border-border py-6 text-xs text-text-secondary">
+    <p>
+      TDA Argentina es un proyecto independiente de consulta sobre la Televisión Digital Abierta. No es un
+      sitio oficial del Estado argentino, ARSAT ni ENACOM. Los datos de estaciones no están verificados de
+      primera mano contra una fuente oficial — ver <a href="/fuentes-y-metodologia" class="underline hover:text-link">Fuentes y metodología</a>.
+    </p>
+  </div>
+</footer>

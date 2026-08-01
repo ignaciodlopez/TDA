@@ -1,0 +1,79 @@
+---
+title: 'Cómo se estima la cobertura de una estación de TDA'
+summary: 'Qué es la potencia ERP, por qué el radio de cobertura que muestra el mapa es una estimación y no una garantía, y qué factores del terreno real no puede capturar ningún cálculo.'
+category: 'contenido-tecnico'
+level: 'intermedio'
+readingTimeMinutes: 6
+updatedAt: '2026-07-31'
+author: 'Equipo TDA Argentina'
+heroImage: '../../assets/images/guides/como-se-estima-la-cobertura.jpg'
+heroImageAlt: 'Torre de transmisión de televisión sobre una colina, rodeada de vegetación'
+heroImageCredit:
+  {
+    author: 'Garrett A. Wollman',
+    license: 'CC BY-SA 4.0',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:WHDH-TV_Tower_Road_Newton.jpg',
+  }
+sources:
+  - { name: 'ENACOM — Ente Nacional de Comunicaciones', url: 'https://www.enacom.gob.ar/' }
+relatedGuides: ['isdb-t-canal-fisico-y-virtual', 'que-es-la-tda', 'senal-pixelada-y-cortes']
+---
+
+Cada ficha de estación y el mapa interactivo muestran un **radio de cobertura estimado**. Esta guía
+explica de dónde sale ese número y, más importante todavía, qué es lo que no puede decirte.
+
+## Potencia ERP
+
+La **ERP** (Effective Radiated Power, o potencia radiada efectiva) es la potencia con la que una estación
+transmite, ya considerando la ganancia de su antena transmisora. Es el dato técnico principal que
+determina, en igualdad de las demás condiciones, hasta dónde puede llegar una señal: a mayor potencia,
+mayor alcance teórico.
+
+"En igualdad de las demás condiciones" es la parte importante: la potencia es solo uno de los factores.
+Una estación de alta potencia sobre un cerro despejado puede cubrir mucho más territorio que una de la
+misma potencia rodeada de edificios o en un valle.
+
+## Cómo se calcula el radio que se muestra en este sitio
+
+Este sitio usa dos métodos, según qué dato esté disponible para cada estación (podés ver cuál se usó en
+cada caso en la ficha de la estación, sección "Datos técnicos"):
+
+- **Estimado a partir de la potencia ERP**: un cálculo aproximado a partir de la potencia declarada de la
+  estación.
+- **Promedio de alcance publicado por ARSAT para este tipo de estación**: cuando no hay un cálculo
+  específico por estación, se usa el alcance promedio que ARSAT publica para su tipo de instalación (una
+  Estación Digital de Transmisión de potencia media o alta, o una Unidad Transportable de Transmisión de
+  menor potencia). Es un número general de la red, no específico de esa estación puntual.
+
+El detalle completo de qué método se usó para los datos actualmente cargados está en
+[Fuentes y metodología](/fuentes-y-metodologia).
+
+## Por qué es una estimación y no una garantía
+
+El radio de cobertura es un círculo simplificado. La propagación real de una señal UHF no es un círculo
+perfecto: se ve afectada, entre otros factores, por:
+
+- **Relieve**: cerros, valles o cualquier desnivel del terreno entre la estación y tu ubicación pueden
+  bloquear la línea de vista directa.
+- **Obstáculos construidos**: edificios altos, sobre todo en zonas urbanas densas, pueden generar sombras
+  de señal aunque estés geográficamente dentro del radio estimado.
+- **Vegetación**: árboles frondosos, especialmente con hojas y humedad, atenúan la señal UHF de forma
+  apreciable.
+- **Altura y tipo de tu propia antena**: dos ubicaciones a la misma distancia de la estación pueden tener
+  recepción muy distinta según la altura de la antena receptora y si hay línea de vista directa.
+- **Condiciones atmosféricas puntuales**: en menor medida que los factores anteriores, pero pueden influir
+  en momentos específicos.
+
+Por eso, estar geográficamente dentro del radio de cobertura estimado no garantiza buena recepción, y
+estar apenas afuera tampoco significa necesariamente que no vaya a haber señal — es una guía orientativa
+para saber qué estaciones tiene sentido probar, no una medición de tu ubicación específica.
+
+## Qué hacer con esta información en la práctica
+
+Usá el radio estimado para decidir **qué estación probar primero** con la herramienta
+[Estación más cercana](/herramientas/estacion-mas-cercana), no como confirmación de que vas a recibir
+señal. La única forma de saber con certeza si tenés buena recepción en tu ubicación exacta es hacer la
+prueba real: instalar la antena, orientarla según [esta guía](/guias/como-orientar-antena-tda), y hacer la
+búsqueda de canales. Si el resultado no es el esperado, la guía de
+[señal pixelada, cortes o canales que desaparecen](/guias/senal-pixelada-y-cortes) ayuda a diagnosticar
+por qué.

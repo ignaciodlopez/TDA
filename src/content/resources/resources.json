@@ -1,0 +1,90 @@
+[
+  {
+    "id": "tda-gob-ar",
+    "title": "Televisión Digital Abierta — sitio oficial",
+    "description": "Sitio oficial de la TDA en Argentina, con información sobre cómo ver la señal, el mapa oficial de estaciones y la grilla de canales y cobertura por provincia.",
+    "category": "documentacion-tecnica",
+    "author": "TDA / ARSAT",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://www.tda.gob.ar/",
+    "lastCheckedAt": "2026-07-31"
+  },
+  {
+    "id": "tda-mapa-estaciones",
+    "title": "Mapa oficial de estaciones de transmisión",
+    "description": "Mapa interactivo oficial de la TDA para consultar cobertura y estaciones transmisoras por dirección o localidad.",
+    "category": "datos-abiertos",
+    "author": "TDA / ARSAT",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://www.tda.gob.ar/mapa-estaciones.php",
+    "lastCheckedAt": "2026-07-31"
+  },
+  {
+    "id": "tda-canales-cobertura",
+    "title": "Canales y cobertura por provincia y localidad",
+    "description": "Buscador oficial de canales disponibles y cobertura por provincia y localidad.",
+    "category": "documentacion-tecnica",
+    "author": "TDA / ARSAT",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://www.tda.gob.ar/canales-cobertura.php",
+    "lastCheckedAt": "2026-07-31"
+  },
+  {
+    "id": "enacom-institucional",
+    "title": "ENACOM — Ente Nacional de Comunicaciones",
+    "description": "Organismo regulador de las comunicaciones en Argentina, con normativa, resoluciones y trámites vinculados a la radiodifusión y la televisión digital.",
+    "category": "normativa",
+    "author": "ENACOM",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://www.enacom.gob.ar/",
+    "lastCheckedAt": "2026-07-31"
+  },
+  {
+    "id": "enacom-datos-abiertos",
+    "title": "ENACOM — Portal de Datos Abiertos",
+    "description": "Portal de datos abiertos de ENACOM, con datasets sobre telefonía, internet fija, TV por suscripción y otros servicios de comunicaciones regulados.",
+    "category": "datos-abiertos",
+    "author": "ENACOM",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://datosabiertos.enacom.gob.ar/",
+    "lastCheckedAt": "2026-07-31"
+  },
+  {
+    "id": "argentina-gob-ar-tda",
+    "title": "Estaciones de la Televisión Digital Abierta — Argentina.gob.ar",
+    "description": "Página institucional con información general sobre la red de estaciones de la TDA en el marco del plan Conectar.",
+    "category": "documentacion-tecnica",
+    "author": "Jefatura de Gabinete de Ministros",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://www.argentina.gob.ar/jefatura/innovacion-publica/telecomunicaciones-y-conectividad/conectar/estaciones-de-la-television",
+    "lastCheckedAt": "2026-07-31"
+  },
+  {
+    "id": "datos-gob-ar",
+    "title": "datos.gob.ar — Portal de datos abiertos del Estado argentino",
+    "description": "Portal nacional de datos abiertos, que incluye datasets publicados por distintos organismos, entre ellos ENACOM.",
+    "category": "datos-abiertos",
+    "author": "Jefatura de Gabinete de Ministros",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://datos.gob.ar/",
+    "lastCheckedAt": "2026-07-31"
+  },
+  {
+    "id": "openfreemap",
+    "title": "OpenFreeMap",
+    "description": "Proveedor de mapas vectoriales gratuito y sin necesidad de API key, usado como estilo base del mapa interactivo de este sitio, construido sobre datos de OpenStreetMap.",
+    "category": "herramienta",
+    "author": "OpenFreeMap",
+    "date": "2026-07-31",
+    "format": "web",
+    "url": "https://openfreemap.org/",
+    "lastCheckedAt": "2026-07-31"
+  }
+]

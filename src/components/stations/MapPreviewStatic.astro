@@ -1,0 +1,86 @@
+---
+import type { Station } from '@/types/station';
+
+interface Props {
+  stations: Station[];
+}
+
+const { stations } = Astro.props;
+
+// Proyección lineal simple (no cartográfica) del territorio continental argentino, solo para esta
+// vista previa decorativa. El mapa real y georreferenciado está en /mapa (MapLibre + OpenStreetMap).
+// El viewBox usa una proporción "panorámica" (no la relación de aspecto real de Argentina, que es
+// muy alargada norte-sur) para que encaje bien en una tarjeta ancha sin recortar contenido con
+// preserveAspectRatio="meet".
+const BOUNDS = { minLat: -55.1, maxLat: -21.8, minLng: -73.6, maxLng: -53.5 };
+const WIDTH = 640;
+const HEIGHT = 420;
+const PADDING = 40;
+
+function project(lat: number, lng: number) {
+  const x = PADDING + ((lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng)) * (WIDTH - PADDING * 2);
+  const y = PADDING + ((BOUNDS.maxLat - lat) / (BOUNDS.maxLat - BOUNDS.minLat)) * (HEIGHT - PADDING * 2);
+  return { x, y };
+}
+
+const points = stations.map((station) => ({
+  ...project(station.location.latitude, station.location.longitude),
+  status: station.status,
+  name: station.name,
+}));
+
+const COLUMNS = 8;
+const ROWS = 5;
+const verticalLines = Array.from({ length: COLUMNS + 1 }, (_, i) => (WIDTH / COLUMNS) * i);
+const horizontalLines = Array.from({ length: ROWS + 1 }, (_, i) => (HEIGHT / ROWS) * i);
+
+const DOT_FILL: Record<Station['status'], string> = {
+  active: '#16a34a',
+  incomplete: '#eab308',
+  inactive: '#dc2626',
+  planned: '#64748b',
+};
+---
+
+<div class="group relative h-full w-full overflow-hidden bg-bg-secondary">
+  <svg
+    viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+    preserveAspectRatio="xMidYMid meet"
+    class="h-full w-full"
+    role="img"
+    aria-label="Vista previa esquemática de estaciones de TDA en el mapa de Argentina"
+  >
+    <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="var(--color-bg-secondary)" />
+    {verticalLines.map((x) => <line x1={x} y1="0" x2={x} y2={HEIGHT} stroke="var(--color-border)" stroke-width="1" />)}
+    {horizontalLines.map((y) => <line x1="0" y1={y} x2={WIDTH} y2={y} stroke="var(--color-border)" stroke-width="1" />)}
+    <rect
+      x="1"
+      y="1"
+      width={WIDTH - 2}
+      height={HEIGHT - 2}
+      fill="none"
+      stroke="var(--color-border)"
+      stroke-width="2"
+    />
+    {
+      points.map((point) => (
+        <g>
+          <circle cx={point.x} cy={point.y} r={9} fill={DOT_FILL[point.status]} opacity="0.18" />
+          <circle cx={point.x} cy={point.y} r={5} fill={DOT_FILL[point.status]} stroke="white" stroke-width="1.5">
+            <title>{point.name}</title>
+          </circle>
+        </g>
+      ))
+    }
+  </svg>
+
+  <a
+    href="/mapa"
+    class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/40 to-transparent pb-6 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+    aria-label="Abrir el mapa completo de estaciones de TDA"
+  >
+    <span class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-text-primary shadow-lg">
+      Abrir mapa completo
+    </span>
+  </a>
+</div>

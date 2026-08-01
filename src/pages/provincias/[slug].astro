@@ -1,0 +1,84 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import Button from '@/components/common/Button.astro';
+import Icon from '@/components/common/Icon.astro';
+import StationsTable from '@/components/stations/StationsTable.astro';
+import { getAllProvinces, getLocalitiesByProvince } from '@/lib/data/geo';
+import { getStationsByProvince } from '@/lib/data/stations';
+import type { Province } from '@/types/geo';
+
+export async function getStaticPaths() {
+  const provinces = getAllProvinces();
+  return provinces.map((province) => ({ params: { slug: province.slug }, props: { province } }));
+}
+
+interface Props {
+  province: Province;
+}
+
+const { province } = Astro.props;
+
+const localities = getLocalitiesByProvince(province.id).sort((a, b) => a.name.localeCompare(b.name, 'es'));
+const stations = (await getStationsByProvince(province.slug)).sort((a, b) =>
+  a.name.localeCompare(b.name, 'es'),
+);
+---
+
+<SiteLayout
+  title={`Estaciones de TDA en ${province.name}`}
+  description={`Localidades y estaciones de Televisión Digital Abierta cargadas para la provincia de ${province.name}.`}
+  canonicalPath={`/provincias/${province.slug}`}
+>
+  <Breadcrumbs items={[{ label: 'Provincias', href: '/provincias' }, { label: province.name }]} />
+  <section class="relative -mx-5 mb-8 overflow-hidden border-b border-border bg-hero-glow sm:mx-[calc(50%-50vw)]">
+    <div class="container-page flex flex-wrap items-center justify-between gap-4 py-10 sm:py-12">
+      <div class="flex items-center gap-4">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-500/10 text-brand-500">
+          <Icon name="map" size={24} />
+        </span>
+        <h1 class="text-3xl font-extrabold tracking-tight text-gradient-brand sm:text-4xl">{province.name}</h1>
+      </div>
+      <Button href={`/mapa?province=${encodeURIComponent(province.name)}`} variant="secondary">
+        Ver en el mapa
+      </Button>
+    </div>
+  </section>
+
+  <div class="container-page pb-16">
+    <section class="mb-10">
+      <h2 class="mb-3 text-xl font-semibold text-text-primary">Localidades</h2>
+      {
+        localities.length > 0 ? (
+          <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {localities.map((locality) => (
+              <li>
+                <a
+                  href={`/localidades/${locality.slug}`}
+                  class="block rounded-md border border-border px-4 py-2.5 text-sm text-text-primary transition-colors hover:border-brand-500 hover:text-link"
+                >
+                  {locality.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-sm text-text-secondary">Todavía no hay localidades cargadas para esta provincia.</p>
+        )
+      }
+    </section>
+
+    <section>
+      <h2 class="mb-3 text-xl font-semibold text-text-primary">Estaciones</h2>
+      {
+        stations.length > 0 ? (
+          <StationsTable stations={stations} showProvince={false} />
+        ) : (
+          <p class="text-sm text-text-secondary">
+            Todavía no hay estaciones de ejemplo cargadas para esta provincia.
+          </p>
+        )
+      }
+    </section>
+  </div>
+</SiteLayout>

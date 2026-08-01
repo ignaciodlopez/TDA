@@ -1,0 +1,54 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
+import Card from '@/components/common/Card.astro';
+import PageHeader from '@/components/common/PageHeader.astro';
+import { getCollection } from 'astro:content';
+
+const resources = (await getCollection('resources')).sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const CATEGORY_LABEL: Record<string, string> = {
+  normativa: 'Normativa',
+  manual: 'Manuales',
+  'documentacion-tecnica': 'Documentación técnica',
+  'datos-abiertos': 'Datos abiertos',
+  herramienta: 'Herramientas',
+};
+
+const categories = Array.from(new Set(resources.map((r) => r.data.category)));
+---
+
+<SiteLayout
+  title="Recursos"
+  description="Documentación técnica, normativa, datos abiertos y herramientas relacionadas con la Televisión Digital Abierta en Argentina."
+  canonicalPath="/recursos"
+>
+  <Breadcrumbs items={[{ label: 'Recursos' }]} />
+  <div class="container-page pb-16">
+    <PageHeader icon="folder" title="Recursos">
+      Enlaces a fuentes oficiales y herramientas relacionadas. Verificamos periódicamente que sigan
+      disponibles; la fecha de la última verificación figura en cada tarjeta.
+    </PageHeader>
+
+    {
+      categories.map((category) => (
+        <section class="mb-10">
+          <h2 class="mb-4 text-lg font-semibold text-text-primary">{CATEGORY_LABEL[category] ?? category}</h2>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {resources
+              .filter((r) => r.data.category === category)
+              .map((resource) => (
+                <Card href={resource.data.url}>
+                  <h3 class="mb-1.5 font-semibold text-text-primary">{resource.data.title}</h3>
+                  <p class="mb-2 text-sm text-text-secondary">{resource.data.description}</p>
+                  <p class="text-xs text-text-secondary">
+                    {resource.data.author} · verificado el <span class="font-mono">{resource.data.lastCheckedAt}</span>
+                  </p>
+                </Card>
+              ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</SiteLayout>
