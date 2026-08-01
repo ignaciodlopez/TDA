@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Station } from '@/types/station';
-import { bearingDegrees, degreesToCardinal, formatAzimuth } from '@/lib/geo/azimuth';
+import { angularDifference, bearingDegrees, degreesToCardinal, formatAzimuth } from '@/lib/geo/azimuth';
 import { formatDistanceKm, haversineDistanceKm } from '@/lib/geo/distance';
 import { sortStationsByDistance } from '@/lib/geo/rank';
 import type { Coordinates } from '@/types/geo';
@@ -11,6 +11,10 @@ import { useDeviceOrientation } from '@/features/tools/useDeviceOrientation';
 interface Props {
   stations: Station[];
 }
+
+// Margen de tolerancia para considerar "alineado": el rumbo suavizado igual tiene algo de
+// ruido, así que 0° exacto casi nunca ocurre y el aviso nunca dispararía con un umbral más chico.
+const ALIGNMENT_TOLERANCE_DEG = 6;
 
 export default function AntennaOrientationTool({ stations }: Props) {
   const [origin, setOrigin] = useState<Coordinates | null>(null);
@@ -45,6 +49,20 @@ export default function AntennaOrientationTool({ stations }: Props) {
   const compassActive = compass.state.status === 'active';
   const headingOffset = compassActive && compass.state.status === 'active' ? compass.state.headingDegrees : 0;
 
+  const isAligned =
+    compassActive && azimuth !== null && Math.abs(angularDifference(azimuth, headingOffset)) <= ALIGNMENT_TOLERANCE_DEG;
+
+  // Avisa por vibración al entrar en la zona alineada (no en cada frame mientras seguís ahí,
+  // para no generar un zumbido continuo). Se resetea solo al salir de la zona. La Vibration API
+  // no existe en Safari/iOS, por eso el color de la flecha abajo funciona como respaldo visual.
+  const wasAlignedRef = useRef(false);
+  useEffect(() => {
+    if (isAligned && !wasAlignedRef.current && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate([80, 40, 80]);
+    }
+    wasAlignedRef.current = isAligned;
+  }, [isAligned]);
+
   return (
     <div className="space-y-6">
       <OriginPicker
@@ -64,7 +82,7 @@ export default function AntennaOrientationTool({ stations }: Props) {
         <div className="grid gap-6 rounded-lg border border-border bg-bg-primary p-6 sm:grid-cols-2">
           <div className="flex flex-col items-center justify-center gap-3">
             <div
-              className="relative flex h-40 w-40 items-center justify-center rounded-full border-2 border-border transition-transform duration-150 ease-out"
+              className="relative flex h-40 w-40 items-center justify-center rounded-full border-2 border-border"
               style={{ transform: `rotate(${-headingOffset}deg)` }}
               aria-hidden="true"
             >
@@ -73,7 +91,7 @@ export default function AntennaOrientationTool({ stations }: Props) {
               <span className="absolute bottom-1 text-xs text-text-secondary">S</span>
               <span className="absolute left-1 text-xs text-text-secondary">O</span>
               <div
-                className="absolute bottom-1/2 left-1/2 h-16 w-1 -ml-0.5 rounded-full bg-brand-500"
+                className={`absolute bottom-1/2 left-1/2 h-16 w-1 -ml-0.5 rounded-full transition-colors duration-150 ${isAligned ? 'bg-status-good' : 'bg-brand-500'}`}
                 style={{ transform: `rotate(${azimuth}deg)`, transformOrigin: '50% 100%' }}
               />
             </div>
@@ -98,8 +116,9 @@ export default function AntennaOrientationTool({ stations }: Props) {
             </p>
             {compassActive && (
               <p className="mt-2 text-sm text-status-good-text">
-                Brújula activa: cuando la flecha apunte hacia arriba, tu celular está mirando hacia la
-                estación.
+                {isAligned
+                  ? '¡Alineado! Tu celular está mirando hacia la estación.'
+                  : 'Brújula activa: cuando la flecha apunte hacia arriba, tu celular está mirando hacia la estación.'}
               </p>
             )}
           </div>

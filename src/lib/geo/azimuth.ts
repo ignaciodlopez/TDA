@@ -52,3 +52,8 @@ export function degreesToCardinal(degrees: number): CardinalPoint {
 export function formatAzimuth(degrees: number): string {
   return `${Math.round(degrees)}°`;
 }
+
+/** Diferencia angular con signo entre dos rumbos, normalizada al rango (-180, 180]. */
+export function angularDifference(a: number, b: number): number {
+  return ((((a - b) % 360) + 540) % 360) - 180;
+}
