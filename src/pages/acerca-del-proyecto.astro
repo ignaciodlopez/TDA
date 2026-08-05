@@ -12,28 +12,43 @@ import PageHeader from '@/components/common/PageHeader.astro';
   <Breadcrumbs items={[{ label: 'Acerca del proyecto' }]} />
   <div class="container-page pb-16">
     <PageHeader icon="building" title="Acerca del proyecto" />
-    <div class="prose-tda">
+    <div class="prose-tda mx-auto">
       <p>
-        TDA Argentina es un proyecto independiente que busca ser el sitio de referencia para consultar
-        información sobre la Televisión Digital Abierta en el país: dónde hay estaciones, qué canales se
-        pueden recibir, cómo instalar una antena y cómo resolver problemas de recepción, todo explicado en
-        lenguaje simple sin perder precisión técnica.
+        TDA Argentina es un proyecto independiente para consultar en un solo lugar la información de la
+        Televisión Digital Abierta en el país: dónde hay estaciones transmisoras, qué canales se pueden
+        recibir en cada una, cómo instalar una antena y cómo resolver problemas de recepción — todo
+        explicado en lenguaje simple, sin perder precisión técnica.
       </p>
 
       <h2>Qué no es este sitio</h2>
       <ul>
         <li>No es un sitio oficial del Estado argentino, de ARSAT ni de ENACOM.</li>
         <li>No reemplaza al mapa oficial de la TDA (<a href="https://www.tda.gob.ar/" target="_blank" rel="noreferrer">tda.gob.ar</a>).</li>
-        <li>No garantiza recepción de señal: toda distancia, dirección o cobertura mostrada es una estimación.</li>
+        <li>No garantiza recepción de señal: toda distancia, dirección o cobertura que se muestra es una estimación.</li>
       </ul>
 
-      <h2>Cómo está hecho</h2>
+      <h2>Qué tan confiables son los datos</h2>
       <p>
-        Es una aplicación web construida con Astro, React, TypeScript y Tailwind CSS, con un mapa
-        interactivo hecho con MapLibre GL JS sobre mapas de OpenStreetMap servidos por OpenFreeMap. El
-        código y el modelo de datos están pensados para poder incorporar datos oficiales reales a medida
-        que estén disponibles — más detalle en <a href="/fuentes-y-metodologia">Fuentes y metodología</a>.
+        La ubicación y ficha técnica de cada estación son datos reales, pero con nivel de verificación
+        reportado por la comunidad más que oficial. El detalle completo de qué se cargó, qué falta y cómo se
+        verifica cada dato está en <a href="/fuentes-y-metodologia">Fuentes y metodología</a>.
       </p>
+
+      <h2>¿Tenés una consulta o encontraste un error?</h2>
+      <p>
+        Para errores puntuales en los datos de una estación, usá <a href="/reportar-error">Reportar un
+        error</a>. Para cualquier otra consulta, escribinos desde <a href="/contacto">Contacto</a>.
+      </p>
+
+      <details class="mt-10 rounded-md border border-border px-4 py-3 text-sm">
+        <summary class="cursor-pointer font-semibold text-text-primary">Detalle técnico del sitio (para quien le interese)</summary>
+        <div class="prose-tda mt-3">
+          <p>
+            Es una aplicación web construida con Astro, React, TypeScript y Tailwind CSS, con un mapa
+            interactivo hecho con MapLibre GL JS sobre mapas de OpenStreetMap servidos por OpenFreeMap.
+          </p>
+        </div>
+      </details>
     </div>
   </div>
 </SiteLayout>

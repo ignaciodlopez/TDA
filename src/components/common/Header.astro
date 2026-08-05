@@ -10,7 +10,7 @@ const navItems = [
   { label: 'Guías', href: '/guias' },
   { label: 'Herramientas', href: '/herramientas' },
   { label: 'Recursos', href: '/recursos' },
-  { label: 'Preguntas frecuentes', href: '/preguntas-frecuentes' },
+  { label: 'Preguntas', href: '/preguntas-frecuentes' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -32,7 +32,7 @@ const currentPath = Astro.url.pathname;
           <a
             href={item.href}
             aria-current={currentPath === item.href ? 'page' : undefined}
-            class={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+            class={`shrink-0 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors ${
               currentPath === item.href
                 ? 'text-link'
                 : 'text-text-secondary hover:text-text-primary'
