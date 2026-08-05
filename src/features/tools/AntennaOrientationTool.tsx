@@ -90,10 +90,14 @@ export default function AntennaOrientationTool({ stations }: Props) {
               <span className="absolute right-1 text-xs text-text-secondary">E</span>
               <span className="absolute bottom-1 text-xs text-text-secondary">S</span>
               <span className="absolute left-1 text-xs text-text-secondary">O</span>
-              <div
-                className={`absolute bottom-1/2 left-1/2 h-16 w-1 -ml-0.5 rounded-full transition-colors duration-150 ${isAligned ? 'bg-status-good' : 'bg-brand-500'}`}
-                style={{ transform: `rotate(${azimuth}deg)`, transformOrigin: '50% 100%' }}
-              />
+              <svg
+                viewBox="0 0 100 100"
+                className={`absolute inset-0 h-full w-full transition-colors duration-150 ${isAligned ? 'text-status-good' : 'text-brand-500'}`}
+                style={{ transform: `rotate(${azimuth}deg)` }}
+              >
+                <line x1="50" y1="50" x2="50" y2="32" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
+                <polygon points="50,18 43,32 57,32" fill="currentColor" />
+              </svg>
             </div>
             <p className="sr-only">
               Orientá la antena {formatAzimuth(azimuth)}, aproximadamente hacia el {degreesToCardinal(azimuth)}.
