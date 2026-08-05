@@ -7,7 +7,7 @@ const ITEMS: Array<{ color: string; label: string }> = [
 
 export default function MapLegend() {
   return (
-    <div className="rounded-lg border border-border bg-bg-primary/95 p-3 text-xs shadow-[var(--shadow-soft)] backdrop-blur">
+    <div className="max-w-56 rounded-lg border border-border bg-bg-primary/95 p-3 text-xs shadow-[var(--shadow-soft)] backdrop-blur">
       <ul className="flex flex-col gap-1.5">
         {ITEMS.map((item) => (
           <li key={item.label} className="flex items-center gap-2">

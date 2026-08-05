@@ -3,11 +3,11 @@ title: 'Cómo elegir una antena para la TDA'
 summary: 'Interior o exterior, direccional o no, con amplificador o sin: qué mirar antes de comprar una antena según tu distancia a la estación transmisora y el entorno donde vivís.'
 category: 'instalacion'
 level: 'inicial'
-readingTimeMinutes: 6
-updatedAt: '2026-07-31'
+readingTimeMinutes: 9
+updatedAt: '2026-08-05'
 author: 'Equipo TDA Argentina'
 heroImage: '../../assets/images/guides/como-elegir-antena-tda.jpg'
-heroImageAlt: 'Antena UHF exterior de tipo panel montada sobre un mástil'
+heroImageAlt: 'Antena Yagi-Uda UHF exterior montada sobre un mástil'
 heroImageCredit:
   {
     author: 'Tennen-Gas',
@@ -20,9 +20,16 @@ sources:
 relatedGuides: ['que-es-la-tda', 'como-orientar-antena-tda', 'cableado-conectores-y-divisores']
 ---
 
+import { Image } from 'astro:assets';
+import yagiImage from '../../assets/images/guides/como-elegir-antena-tda.jpg';
+import interiorImage from '../../assets/images/guides/antena-interior-coaxial.jpg';
+import panelImage from '../../assets/images/guides/antena-panel-plano.jpg';
+import logPeriodicaImage from '../../assets/images/guides/antena-logoperiodica.jpg';
+
 No existe "la mejor antena" en general: la que te sirve depende de a qué distancia estás de la estación
-transmisora y de qué tan despejado esté el camino hasta ahí. Esta guía te ayuda a achicar las opciones
-antes de comprar.
+transmisora y de qué tan despejado esté el camino hasta ahí. Esta guía repasa primero los tres factores que
+definen la elección, y después los cuatro tipos de antena más comunes para que puedas ubicar cada uno en
+esos factores.
 
 ## Lo primero: la banda
 
@@ -30,21 +37,6 @@ La TDA transmite en banda **UHF**. Cualquier antena que compres tiene que estar 
 (muchas antenas viejas de VHF/UHF combinadas también sirven, pero una antena solo-VHF, pensada para los
 canales analógicos bajos de antes, no va a recibir la señal digital). Si no dice explícitamente "UHF" o
 "UHF/VHF", desconfiá.
-
-## Interior o exterior
-
-- **Interior**: más simple de instalar (se apoya cerca del televisor, sin cableado largo ni necesidad de
-  subir a ningún techo), pero pierde alcance por las paredes y por no tener altura. Suele alcanzar si
-  estás relativamente cerca de la estación transmisora y sin obstáculos grandes en el medio.
-- **Exterior**: mayor alcance porque gana altura y evita que las paredes atenúen la señal, pero requiere
-  instalación (mástil, cableado hacia adentro, a veces trabajo en altura). Es la opción recomendada
-  cuanto mayor sea tu distancia a la estación o más obstáculos (edificios, árboles, relieve) haya en el
-  camino.
-
-Como referencia rápida: si al usar la herramienta [Estación más cercana](/herramientas/estacion-mas-cercana)
-la distancia te da dentro de una porción chica del radio de cobertura estimado y no tenés edificios altos
-cerca, una interior puede alcanzar. Cuanto más te acerques al borde del radio estimado (o lo superes),
-más conviene pensar en una exterior bien orientada.
 
 ## Direccional u omnidireccional
 
@@ -68,6 +60,129 @@ Si vas a repartir la señal a varios televisores con un divisor, un amplificador
 pérdida que introduce el divisor (ver [Cableado, conectores y divisores](/guias/cableado-conectores-y-divisores)).
 Si solo tenés un televisor y ya recibís bien, agregar amplificación de más no mejora nada y a veces
 empeora la calidad por saturación.
+
+## Los tipos de antena más comunes
+
+Con esos tres ejes en mente (banda, direccionalidad, amplificación), estas son las opciones concretas que
+vas a encontrar. Cubren la gran mayoría de las instalaciones de TDA en Argentina, ordenadas de mayor a
+menor alcance típico.
+
+### Yagi-Uda
+
+<figure className="my-4">
+  <Image
+    src={yagiImage}
+    alt="Antena Yagi-Uda UHF exterior, con varios elementos directores y un reflector, montada sobre un mástil"
+    width={640}
+    height={480}
+    className="mx-auto h-auto max-h-72 w-full max-w-md rounded-lg border border-border object-cover shadow-[var(--shadow-soft)]"
+  />
+  <figcaption className="mt-1.5 text-center text-xs text-text-secondary">
+    Foto:{' '}
+    <a href="https://commons.wikimedia.org/wiki/File:UHF_TV_Antenna_001.JPG" className="underline underline-offset-2 hover:text-link" target="_blank" rel="noreferrer">
+      Tennen-Gas
+    </a>{' '}
+    (CC BY-SA 3.0, vía Wikimedia Commons)
+  </figcaption>
+</figure>
+
+Exterior, con varios elementos directores en fila y un reflector detrás. Es el diseño más tradicional para
+distancias grandes.
+
+- **Ventajas**: la mayor ganancia y alcance de los cuatro tipos; muy direccional, así que rechaza bien las
+  interferencias que vienen de otros lados.
+- **Desventajas**: al ser tan direccional, es la más sensible a una mala orientación; requiere instalación
+  exterior en altura (mástil, cableado, a veces trabajo de riesgo) y es la más grande y visible.
+
+### Interior (con cable coaxial)
+
+<figure className="my-4">
+  <Image
+    src={interiorImage}
+    alt="Antena interior de tipo dipolo (orejas de conejo) con lazo UHF y cable coaxial"
+    width={640}
+    height={480}
+    className="mx-auto h-auto max-h-72 w-full max-w-md rounded-lg border border-border object-cover object-bottom shadow-[var(--shadow-soft)]"
+  />
+  <figcaption className="mt-1.5 text-center text-xs text-text-secondary">
+    Foto:{' '}
+    <a href="https://commons.wikimedia.org/wiki/File:Rabbit-ears_dipole_antenna_with_UHF_loop_20090204.jpg" className="underline underline-offset-2 hover:text-link" target="_blank" rel="noreferrer">
+      Mark Wagner
+    </a>{' '}
+    (CC BY 2.5, vía Wikimedia Commons)
+  </figcaption>
+</figure>
+
+Se apoya cerca del televisor y se conecta directo por cable coaxial, sin salir de la habitación.
+
+- **Ventajas**: instalación mínima (nada de mástil, cableado largo ni trabajo en altura); económica; fácil
+  de reubicar para probar distintos lugares de la casa.
+- **Desventajas**: el alcance más corto de los cuatro; las paredes y la falta de altura la debilitan mucho;
+  en general solo alcanza si estás relativamente cerca de la estación y sin obstáculos grandes en el medio.
+
+Como referencia rápida: si al usar la herramienta [Estación más cercana](/herramientas/estacion-mas-cercana)
+la distancia te da dentro de una porción chica del radio de cobertura estimado y no tenés edificios altos
+cerca, una interior puede alcanzar. Cuanto más te acerques al borde del radio estimado (o lo superes), más
+conviene pensar en alguna de las tres opciones exteriores.
+
+### Panel plano
+
+<figure className="my-4">
+  <Image
+    src={panelImage}
+    alt="Antena UHF de tipo panel plano (grilla con elementos en forma de moño) montada sobre un mástil, contra el cielo"
+    width={640}
+    height={480}
+    className="mx-auto h-auto max-h-72 w-full max-w-md rounded-lg border border-border object-cover shadow-[var(--shadow-soft)]"
+  />
+  <figcaption className="mt-1.5 text-center text-xs text-text-secondary">
+    Foto:{' '}
+    <a href="https://commons.wikimedia.org/wiki/File:Eight_bay_bowtie_TV_antenna.jpg" className="underline underline-offset-2 hover:text-link" target="_blank" rel="noreferrer">
+      ajmexico
+    </a>
+    , vía Chetvorno (CC BY 2.0, Wikimedia Commons)
+  </figcaption>
+</figure>
+
+Exterior, con elementos en forma de "moño" (bowtie) sobre una grilla reflectora, en vez de varillas en
+fila como la Yagi.
+
+- **Ventajas**: perfil más compacto y menos visible que una Yagi grande; buen desempeño a distancias
+  medias; al tener menos partes finas que sobresalen, resiste mejor el viento.
+- **Desventajas**: en general menos ganancia que una Yagi a distancias largas; sigue siendo direccional y
+  requiere instalación exterior.
+
+### Log-periódica
+
+<figure className="my-4">
+  <Image
+    src={logPeriodicaImage}
+    alt="Antena log-periódica UHF, con elementos de longitud decreciente sobre un brazo, y cable coaxial conectado"
+    width={640}
+    height={480}
+    className="mx-auto h-auto max-h-72 w-full max-w-md rounded-lg border border-border object-cover shadow-[var(--shadow-soft)]"
+  />
+  <figcaption className="mt-1.5 text-center text-xs text-text-secondary">
+    Foto: Armando.miani (dominio público, vía Wikimedia Commons)
+  </figcaption>
+</figure>
+
+Exterior, con elementos de longitud decreciente sobre un mismo brazo. A simple vista se parece a una Yagi,
+pero el diseño está pensado para cubrir bien un rango ancho de canales en vez de un canal puntual.
+
+- **Ventajas**: desempeño parejo en un rango amplio de canales UHF, sin necesitar tanto ajuste fino; buena
+  opción cuando las señales que te interesan están repartidas en canales físicos bastante distintos.
+- **Desventajas**: en general algo menos ganancia pico que una Yagi optimizada para una frecuencia
+  puntual; también es exterior, direccional y necesita orientación.
+
+### Comparación rápida
+
+| Tipo | Alcance | Instalación | Ideal para |
+| --- | --- | --- | --- |
+| **Yagi-Uda** | El mayor | Exterior, en altura | Distancias grandes o señal débil |
+| **Interior (coaxial)** | El menor | Mínima, sin salir de la habitación | Cerca de la estación, sin obstáculos |
+| **Panel plano** | Medio-alto | Exterior | Poco espacio o zonas ventosas |
+| **Log-periódica** | Medio-alto | Exterior | Recibir varios canales UHF alejados entre sí |
 
 ## Errores comunes al elegir
 
