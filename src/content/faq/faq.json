@@ -38,7 +38,7 @@
   {
     "id": "no-aparecen-canales",
     "question": "¿Por qué no aparece ningún canal después de hacer la búsqueda automática?",
-    "answer": "Las causas más comunes son: estar fuera del área de cobertura estimada, un problema de cableado o conexión, o una antena no apta para la banda UHF. La guía de diagnóstico de problemas ordena los pasos a revisar de lo más simple a lo más técnico.",
+    "answer": "Antes que nada, confirmá que el televisor esté buscando en modo 'Aire' o 'Antena', no en 'Cable' — es la causa más común y no tiene que ver con la instalación. Si eso ya está bien, las siguientes causas más comunes son: estar fuera del área de cobertura estimada, un problema de cableado o conexión, o una antena no apta para la banda UHF. La guía de diagnóstico de problemas ordena los pasos a revisar de lo más simple a lo más técnico.",
     "category": "recepcion"
   },
   {
@@ -80,7 +80,7 @@
   {
     "id": "como-reporto-un-error",
     "question": "¿Cómo reporto un error en los datos?",
-    "answer": "Podés usar la página 'Reportar error' para avisarnos. Todavía no hay un sistema de reportes comunitarios con moderación automática; por ahora los reportes se reciben y revisan manualmente.",
+    "answer": "Podés usar la página 'Reportar error' para avisarnos. Los reportes se reciben y revisan manualmente.",
     "category": "datos"
   },
   {

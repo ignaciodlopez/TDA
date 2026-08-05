@@ -13,6 +13,10 @@ export interface DiagnosticSymptom {
 
 export const CAUSES: Record<string, DiagnosticCause> = {
   'repetir-busqueda': { id: 'repetir-busqueda', label: 'Repetir la búsqueda automática de canales' },
+  'modo-aire': {
+    id: 'modo-aire',
+    label: 'Confirmar que la búsqueda esté en modo "Aire" o "Antena", no en "Cable"',
+  },
   cableado: {
     id: 'cableado',
     label: 'Revisar conectores y cableado (dobleces, cables pisados o mal enroscados)',
@@ -41,7 +45,7 @@ export const SYMPTOMS: DiagnosticSymptom[] = [
   {
     id: 'sin-canales',
     label: 'No aparece ningún canal',
-    causeIds: ['repetir-busqueda', 'cableado', 'tipo-antena', 'cobertura', 'orientacion', 'consultar_instalador'],
+    causeIds: ['modo-aire', 'repetir-busqueda', 'cableado', 'tipo-antena', 'cobertura', 'orientacion', 'consultar_instalador'],
   },
   {
     id: 'faltan-canales',
@@ -66,7 +70,7 @@ export const SYMPTOMS: DiagnosticSymptom[] = [
   {
     id: 'tv-no-reconoce',
     label: 'El televisor no reconoce la TDA',
-    causeIds: ['compatibilidad-tv', 'repetir-busqueda'],
+    causeIds: ['modo-aire', 'compatibilidad-tv', 'repetir-busqueda'],
   },
   {
     id: 'antena-interior-no-funciona',
