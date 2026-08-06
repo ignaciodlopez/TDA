@@ -106,10 +106,29 @@ export default function MapView({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const onSelectRef = useRef(onSelectStation);
+  const stationsRef = useRef(stations);
+  const selectedStationIdRef = useRef(selectedStationId);
+  const autoFit = initialCenter === undefined && initialZoom === undefined;
 
   useEffect(() => {
     onSelectRef.current = onSelectStation;
   }, [onSelectStation]);
+
+  useEffect(() => {
+    stationsRef.current = stations;
+  }, [stations]);
+
+  useEffect(() => {
+    selectedStationIdRef.current = selectedStationId;
+  }, [selectedStationId]);
+
+  /** Centra el mapa en una estación puntual sin alejar si ya está más cerca que ese nivel. */
+  function flyToStation(map: MapLibreMap, id: string) {
+    const feature = stationsRef.current.features.find((f) => f.properties.id === id);
+    if (!feature) return;
+    const [lng, lat] = feature.geometry.coordinates as [number, number];
+    map.easeTo({ center: [lng, lat], zoom: Math.max(map.getZoom(), 10), duration: 700 });
+  }
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -124,6 +143,12 @@ export default function MapView({
         center: initialCenter ?? ARGENTINA_CENTER,
         zoom: initialZoom ?? 3.6,
         attributionControl: { compact: true },
+        locale: {
+          'NavigationControl.ZoomIn': 'Acercar',
+          'NavigationControl.ZoomOut': 'Alejar',
+          'NavigationControl.ResetBearing': 'Reorientar al norte',
+          'AttributionControl.ToggleAttribution': 'Mostrar/ocultar atribución',
+        },
         scrollZoom: interactive,
         dragPan: interactive,
         dragRotate: false,
@@ -167,6 +192,12 @@ export default function MapView({
           if (!bounds.isEmpty()) {
             map.fitBounds(bounds, { padding: 48, maxZoom: 11, duration: 0 });
           }
+        }
+
+        // Si se llegó con una estación ya seleccionada (deep link vía ?estacion=), centrar en ella
+        // en vez de dejar el encuadre general de arriba como única vista.
+        if (selectedStationIdRef.current) {
+          flyToStation(map, selectedStationIdRef.current);
         }
 
         map.addLayer({
@@ -256,7 +287,24 @@ export default function MapView({
     const map = mapRef.current;
     if (!map) return;
     const source = map.getSource(SOURCE_ID) as GeoJSONSource | undefined;
-    source?.setData(stations);
+    if (!source) return; // el mapa todavía no terminó de cargar su estilo (ver el efecto de montaje)
+    source.setData(stations);
+
+    // Re-encuadrar cuando cambia el conjunto de estaciones (p. ej. al aplicar un filtro), para que
+    // el mapa no se quede mostrando una zona vacía si el filtro apunta a otra parte del país. Este
+    // efecto no hace nada en el montaje (el `source` todavía no existe hasta que termina `map.on
+    // ('load')`, que ya hace su propio fitBounds instantáneo), así que solo se re-encuadra acá ante
+    // cambios reales posteriores.
+    if (autoFit && stations.features.length > 0) {
+      const bounds = new LngLatBounds();
+      for (const feature of stations.features) {
+        bounds.extend(feature.geometry.coordinates as [number, number]);
+      }
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds, { padding: 48, maxZoom: 11, duration: 600 });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stations]);
 
   useEffect(() => {
@@ -268,6 +316,12 @@ export default function MapView({
       'circle-stroke-width',
       strokeWidthExpression(selectedStationId),
     );
+    // Centrar la cámara en la estación elegida (por búsqueda o por el listado): antes esto solo
+    // resaltaba el punto con un anillo, así que si la estación estaba fuera del encuadre actual
+    // (p. ej. buscar "Ushuaia" con el mapa centrado en Buenos Aires) no había ninguna señal visual
+    // de dónde quedaba ni de que la selección hubiera funcionado.
+    if (selectedStationId) flyToStation(map, selectedStationId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedStationId]);
 
   return (

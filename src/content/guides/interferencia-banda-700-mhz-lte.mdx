@@ -1,0 +1,79 @@
+---
+title: 'Interferencia de redes 4G/LTE en la señal de TDA: por qué pasa y cómo solucionarla'
+summary: 'La banda de 700 MHz, antes usada por la televisión digital, hoy es de telefonía celular 4G/LTE. Por qué una antena celular cercana puede afectar la recepción de TDA y qué hacer al respecto.'
+category: 'solucion-de-problemas'
+level: 'intermedio'
+readingTimeMinutes: 6
+updatedAt: '2026-08-05'
+author: 'Equipo TDA Argentina'
+heroImage: '../../assets/images/guides/interferencia-banda-700-mhz-lte.jpg'
+heroImageAlt: 'Torre de telefonía celular con múltiples antenas, vista desde abajo'
+heroImageCredit:
+  {
+    author: 'David Ratledge',
+    license: 'CC BY 4.0',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Cellular_Telephone_Tower_-_Knoxville,_Tennessee_-_May_26,_2014.jpg',
+  }
+sources:
+  - { name: 'ENACOM — Resolución 2531/2016', url: 'https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-2531-2016-261783' }
+  - { name: 'TeleSemana — El porqué de las interferencias a celulares en la banda de 700 MHz en Argentina', url: 'https://www.telesemana.com/blog/2023/10/11/el-porque-de-las-interferencias-a-celulares-en-la-banda-de-700-mhz-en-argentina/' }
+  - { name: 'CanalAR — Cómo solucionar las interferencias LTE vs TDT', url: 'https://www.canal-ar.com.ar/posts/posteo.asp?Id=522' }
+relatedGuides: ['senal-pixelada-y-cortes', 'cableado-conectores-y-divisores', 'como-elegir-antena-tda']
+---
+
+Si la señal de TDA se pixela o se corta justo después de que empezó a funcionar un servicio 4G nuevo cerca
+de tu casa, o si notás que el problema aparece solo en algunos canales y solo cuando hay actividad de red
+celular, la causa puede no estar en tu antena ni en tu cableado, sino en la banda de frecuencias vecina.
+
+## Por qué comparten "vecindario" la TDA y el 4G
+
+La televisión digital y la telefonía celular no usan la misma frecuencia, pero sí bandas contiguas dentro
+del espectro UHF. En 2014, Argentina subastó la llamada **banda de 700 MHz** (698 a 806 MHz) a operadoras de
+telefonía celular para el despliegue de servicios 4G, en línea con lo que hicieron la mayoría de los países
+de la región. Como esa porción del espectro había sido usada históricamente por canales de televisión, hubo
+que reordenar qué servicios ocupaban qué frecuencias: la Resolución 2531/2016 de ENACOM fue parte de ese
+proceso, al obligar a licenciatarios que operaban en la franja UHF de 512 a 806 MHz a migrar hacia otra
+banda.
+
+Los canales físicos de las señales nacionales cargadas en este sitio (ver [Canales y señales](/canales))
+están hoy en el rango 22 a 25, bastante por debajo del límite de 700 MHz — así que no deberían compartir
+frontera directa con el 4G. Pero repetidoras o estaciones con canales asignados más arriba en la banda UHF sí
+pueden quedar más cerca de esa frontera, sobre todo si hay una antena de celular físicamente próxima.
+
+## Cómo se manifiesta el problema
+
+A diferencia de una mala orientación de antena (que afecta a todos los canales por igual, todo el tiempo),
+la interferencia por 4G suele tener un patrón más específico:
+
+- Afecta a **algunos canales sí y otros no**, en particular los que están en la parte más alta de la banda
+  UHF que uses.
+- Puede variar según el **tráfico de la red celular cercana**: se nota más en horarios de uso intenso.
+- Suele coincidir en el tiempo con la **puesta en marcha de una antena celular nueva o reforzada** en la
+  zona.
+- Es más probable si tenés una **antena amplificada**: el amplificador no distingue entre la señal de TV que
+  querés recibir y la señal celular vecina, así que puede terminar amplificando ambas — empeorando el
+  problema en vez de solucionarlo.
+
+## Qué hacer
+
+1. **Confirmá que no es otra causa más común primero.** Antes de sospechar de interferencia celular, seguí
+   los pasos de [Señal pixelada, cortes o canales que desaparecen](/guias/senal-pixelada-y-cortes): cableado,
+   conectores y orientación de antena explican la gran mayoría de los problemas de recepción.
+2. **Instalá un filtro de rechazo LTE/4G.** Es un dispositivo pasivo (no necesita alimentación eléctrica) que
+   se intercala en el cable coaxial y bloquea las frecuencias por encima de aproximadamente 694 MHz, dejando
+   pasar sin cambios la banda que usa la TV. Se instala antes de cualquier amplificador, lo más cerca posible
+   de la antena.
+3. **Revisá la posición del filtro si ya tenés uno.** Un filtro instalado después de un amplificador no sirve
+   de nada: la interferencia ya fue amplificada antes de llegar a él. El orden correcto es antena → filtro →
+   amplificador (si lo hay) → televisor o decodificador.
+4. **Si no tenés antena amplificada, probá sin amplificación.** A veces un amplificador instalado "por las
+   dudas" es la causa de que la interferencia sea audible cuando no lo sería con una antena pasiva bien
+   ubicada — ver [Cómo elegir una antena para la TDA](/guias/como-elegir-antena-tda).
+
+## Lo que un filtro LTE no soluciona
+
+Un filtro de rechazo LTE no mejora una mala orientación de antena, un cable en mal estado ni una distancia
+excesiva a la estación transmisora — solo bloquea interferencia que entra desde la banda celular. Si después
+de instalarlo el problema persiste igual en todos los canales y en cualquier horario, lo más probable es que
+la causa original nunca fue la interferencia celular, sino alguno de los puntos cubiertos en
+[Cableado, conectores y divisores](/guias/cableado-conectores-y-divisores).

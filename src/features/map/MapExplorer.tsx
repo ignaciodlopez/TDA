@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Station } from '@/types/station';
 import { STATION_STATUS_LABEL } from '@/types/station';
 import {
@@ -9,14 +9,15 @@ import {
   type MapFilters,
 } from '@/lib/geo/filters';
 import { stationsToFeatureCollection } from '@/lib/geo/geojson';
-import { formatDistanceKm, haversineDistanceKm } from '@/lib/geo/distance';
+import { formatDistanceKm } from '@/lib/geo/distance';
+import { sortStationsByDistance } from '@/lib/geo/rank';
 import { searchPlaces } from '@/lib/data/geo';
 import type { Coordinates } from '@/types/geo';
 import MapView from '@/features/map/MapView';
 import MapLegend from '@/features/map/MapLegend';
 import FilterPanel from '@/features/map/FilterPanel';
 import StationPanel from '@/features/map/StationPanel';
-import { useGeolocation } from '@/features/map/useGeolocation';
+import { useGeolocation, geolocationErrorMessage } from '@/features/map/useGeolocation';
 import { ICON_PATHS, ReactIcon } from '@/lib/icons';
 
 interface Props {
@@ -34,6 +35,8 @@ export default function MapExplorer({ stations }: Props) {
   );
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [query, setQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const { state: geoState, request: requestLocation } = useGeolocation();
 
@@ -66,27 +69,28 @@ export default function MapExplorer({ stations }: Props) {
   const selectedStation = filteredStations.find((s) => s.id === selectedStationId) ?? null;
 
   const listStations = useMemo(() => {
-    const withDistance = filteredStations.map((station) => ({
-      station,
-      distanceKm: origin
-        ? haversineDistanceKm(origin, {
-            latitude: station.location.latitude,
-            longitude: station.location.longitude,
-          })
-        : null,
-    }));
-    withDistance.sort((a, b) => {
-      if (a.distanceKm !== null && b.distanceKm !== null) return a.distanceKm - b.distanceKm;
-      return a.station.name.localeCompare(b.station.name);
-    });
-    return withDistance;
+    if (origin) return sortStationsByDistance(filteredStations, origin);
+    return [...filteredStations]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((station) => ({ station, distanceKm: null as number | null }));
   }, [filteredStations, origin]);
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col">
       <div className="border-border bg-bg-primary border-b p-4">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="relative min-w-[220px] flex-1">
+          <div
+            ref={searchContainerRef}
+            className="relative min-w-[220px] flex-1"
+            onBlur={(e) => {
+              // Igual que en el buscador del header: cerrar solo cuando el foco sale del widget
+              // entero, no al pasar del input a un resultado de la lista — si no, el dropdown se
+              // desmonta antes de que un clic/Enter en un resultado llegue a procesarse.
+              if (!searchContainerRef.current?.contains(e.relatedTarget as Node | null)) {
+                setSearchOpen(false);
+              }
+            }}
+          >
             <label htmlFor="map-search" className="sr-only">
               Buscar estación, localidad o provincia
             </label>
@@ -97,11 +101,18 @@ export default function MapExplorer({ stations }: Props) {
               id="map-search"
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setSearchOpen(false);
+              }}
               placeholder="Buscar estación, localidad o provincia"
               className="border-border bg-bg-primary text-text-primary placeholder:text-text-secondary focus-visible:outline-brand-500 w-full rounded-md border py-2.5 pr-3 pl-9 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
             />
-            {(searchResults.stations.length > 0 || searchResults.places.length > 0) && (
+            {searchOpen && (searchResults.stations.length > 0 || searchResults.places.length > 0) && (
               <ul className="border-border bg-bg-primary absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-md border shadow-[var(--shadow-soft)]">
                 {searchResults.stations.map((station) => (
                   <li key={station.id}>
@@ -110,6 +121,7 @@ export default function MapExplorer({ stations }: Props) {
                       onClick={() => {
                         setSelectedStationId(station.id);
                         setQuery('');
+                        setSearchOpen(false);
                       }}
                       className="hover:bg-surface flex w-full items-center justify-between px-3 py-2 text-left text-sm"
                     >
@@ -120,19 +132,28 @@ export default function MapExplorer({ stations }: Props) {
                 ))}
                 {searchResults.places.map((place) => (
                   <li key={`${place.type}-${place.value.id}`}>
-                    <a
-                      href={
-                        place.type === 'locality'
-                          ? `/localidades/${place.value.slug}`
-                          : `/provincias/${place.value.slug}`
-                      }
-                      className="hover:bg-surface flex items-center justify-between px-3 py-2 text-sm"
-                    >
-                      <span>{place.value.name}</span>
-                      <span className="text-text-secondary text-xs">
-                        {place.type === 'locality' ? 'Localidad' : 'Provincia'}
-                      </span>
-                    </a>
+                    {place.type === 'province' ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFilters((f) => ({ ...f, province: place.value.name }));
+                          setQuery('');
+                          setSearchOpen(false);
+                        }}
+                        className="hover:bg-surface flex w-full items-center justify-between px-3 py-2 text-left text-sm"
+                      >
+                        <span>{place.value.name}</span>
+                        <span className="text-text-secondary text-xs">Provincia</span>
+                      </button>
+                    ) : (
+                      <a
+                        href={`/localidades/${place.value.slug}`}
+                        className="hover:bg-surface flex items-center justify-between px-3 py-2 text-sm"
+                      >
+                        <span>{place.value.name}</span>
+                        <span className="text-text-secondary text-xs">Localidad</span>
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -190,6 +211,9 @@ export default function MapExplorer({ stations }: Props) {
             {geoState.status === 'requesting' ? 'Buscando ubicación…' : 'Usar mi ubicación'}
           </button>
         </div>
+        {geolocationErrorMessage(geoState.status) && (
+          <p className="text-status-bad-text mt-2 text-xs">{geolocationErrorMessage(geoState.status)}</p>
+        )}
       </div>
 
       <div className={filtersOpen ? 'block' : 'hidden sm:block'}>
@@ -218,11 +242,7 @@ export default function MapExplorer({ stations }: Props) {
                     origin={origin}
                     onClose={() => setSelectedStationId(null)}
                     onRequestLocation={() => requestLocation()}
-                    locationStatus={
-                      geoState.status === 'granted'
-                        ? 'idle'
-                        : (geoState.status as 'idle' | 'requesting' | 'denied' | 'unsupported')
-                    }
+                    locationStatus={geoState.status}
                   />
                 </aside>
                 <div className="border-border bg-bg-primary absolute inset-x-0 bottom-0 max-h-[70vh] rounded-t-xl border-t shadow-2xl md:hidden">
@@ -234,11 +254,7 @@ export default function MapExplorer({ stations }: Props) {
                     origin={origin}
                     onClose={() => setSelectedStationId(null)}
                     onRequestLocation={() => requestLocation()}
-                    locationStatus={
-                      geoState.status === 'granted'
-                        ? 'idle'
-                        : (geoState.status as 'idle' | 'requesting' | 'denied' | 'unsupported')
-                    }
+                    locationStatus={geoState.status}
                   />
                 </div>
               </>

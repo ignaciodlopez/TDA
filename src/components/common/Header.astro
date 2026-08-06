@@ -1,6 +1,16 @@
 ---
 import GlobalSearch from '@/features/station-search/GlobalSearch';
 import ThemeToggle from '@/components/common/ThemeToggle.astro';
+import { getAllStations } from '@/lib/data/stations';
+
+// Lista liviana (sin datos técnicos ni señales) para que el buscador global pueda encontrar
+// estaciones además de las 17 localidades principales de src/data/provinces/localities.json.
+const stations = (await getAllStations()).map((station) => ({
+  id: station.id,
+  slug: station.slug,
+  name: station.name,
+  city: station.location.city,
+}));
 
 const navItems = [
   { label: 'Inicio', href: '/' },
@@ -45,7 +55,7 @@ const currentPath = Astro.url.pathname;
     </nav>
 
     <div class="hidden max-w-xs flex-1 md:block">
-      <GlobalSearch client:load />
+      <GlobalSearch client:load stations={stations} />
     </div>
 
     <div class="ml-auto flex shrink-0 items-center gap-1">
@@ -69,7 +79,7 @@ const currentPath = Astro.url.pathname;
   <div id="mobile-menu" class="hidden border-t border-border lg:hidden">
     <div class="container-page space-y-3 py-4">
       <div class="md:hidden">
-        <GlobalSearch client:load />
+        <GlobalSearch client:load stations={stations} />
       </div>
       <nav aria-label="Navegación móvil" class="flex flex-col gap-1">
         {

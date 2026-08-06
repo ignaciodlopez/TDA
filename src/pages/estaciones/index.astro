@@ -2,10 +2,12 @@
 import SiteLayout from '@/layouts/SiteLayout.astro';
 import Breadcrumbs from '@/components/common/Breadcrumbs.astro';
 import PageHeader from '@/components/common/PageHeader.astro';
-import StationsTable from '@/components/stations/StationsTable.astro';
+import StationsExplorer from '@/features/stations/StationsExplorer';
 import { getAllStations } from '@/lib/data/stations';
+import { getAllOperators } from '@/lib/data/geo';
 
 const stations = (await getAllStations()).sort((a, b) => a.name.localeCompare(b.name, 'es'));
+const operatorNames = Object.fromEntries(getAllOperators().map((op) => [op.id, op.name]));
 ---
 
 <SiteLayout
@@ -21,7 +23,7 @@ const stations = (await getAllStations()).sort((a, b) => a.name.localeCompare(b.
     </PageHeader>
     {
       stations.length > 0 ? (
-        <StationsTable stations={stations} />
+        <StationsExplorer client:load stations={stations} operatorNames={operatorNames} />
       ) : (
         <p class="text-sm text-text-secondary">Todavía no hay estaciones cargadas.</p>
       )

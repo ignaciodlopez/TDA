@@ -9,14 +9,20 @@ import { formatDistanceKm, haversineDistanceKm } from '@/lib/geo/distance';
 import { bearingDegrees, degreesToCardinal, formatAzimuth } from '@/lib/geo/azimuth';
 import type { Coordinates } from '@/types/geo';
 import { ICON_PATHS, ReactIcon } from '@/lib/icons';
+import { geolocationErrorMessage, type GeolocationState } from '@/features/map/useGeolocation';
 
 interface Props {
   station: Station;
   origin: Coordinates | null;
   onClose: () => void;
   onRequestLocation: () => void;
-  locationStatus: 'idle' | 'requesting' | 'denied' | 'unsupported';
+  locationStatus: GeolocationState['status'];
 }
+
+// Estados en los que reintentar no puede funcionar: el navegador no soporta geolocalización, o el
+// usuario ya la denegó explícitamente (reintentar sin que cambie el permiso del navegador no hace
+// nada distinto). 'error' sí puede ser transitorio (timeout, GPS momentáneamente no disponible).
+const TERMINAL_STATUSES: GeolocationState['status'][] = ['denied', 'unsupported'];
 
 export default function StationPanel({
   station,
@@ -48,6 +54,11 @@ export default function StationPanel({
     });
   }, [station.signals]);
 
+  function showCopyFeedback(message: string) {
+    setCopyFeedback(message);
+    window.setTimeout(() => setCopyFeedback(null), 2000);
+  }
+
   async function handleShare() {
     const url = `${window.location.origin}/estaciones/${station.slug}`;
     if (navigator.share) {
@@ -58,15 +69,21 @@ export default function StationPanel({
         // El usuario canceló el diálogo nativo de compartir; se ofrece copiar el enlace como alternativa.
       }
     }
-    await navigator.clipboard.writeText(url);
-    setCopyFeedback('Enlace copiado');
-    window.setTimeout(() => setCopyFeedback(null), 2000);
+    try {
+      await navigator.clipboard.writeText(url);
+      showCopyFeedback('Enlace copiado');
+    } catch {
+      showCopyFeedback('No se pudo copiar el enlace');
+    }
   }
 
   async function handleCopyCoordinates() {
-    await navigator.clipboard.writeText(`${destination.latitude}, ${destination.longitude}`);
-    setCopyFeedback('Coordenadas copiadas');
-    window.setTimeout(() => setCopyFeedback(null), 2000);
+    try {
+      await navigator.clipboard.writeText(`${destination.latitude}, ${destination.longitude}`);
+      showCopyFeedback('Coordenadas copiadas');
+    } catch {
+      showCopyFeedback('No se pudieron copiar las coordenadas');
+    }
   }
 
   return (
@@ -125,11 +142,10 @@ export default function StationPanel({
         ) : (
           <div className="flex items-center justify-between gap-3">
             <p className="text-text-secondary text-sm">
-              {locationStatus === 'denied'
-                ? 'No autorizaste tu ubicación, así que no podemos calcular la distancia ni la dirección.'
-                : 'Activá tu ubicación para ver distancia y dirección hacia esta estación.'}
+              {geolocationErrorMessage(locationStatus) ??
+                'Activá tu ubicación para ver distancia y dirección hacia esta estación.'}
             </p>
-            {locationStatus !== 'denied' && (
+            {!TERMINAL_STATUSES.includes(locationStatus) && (
               <button
                 type="button"
                 onClick={onRequestLocation}

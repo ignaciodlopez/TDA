@@ -2,7 +2,7 @@ import type { Station } from '@/types/station';
 import { STATION_STATUS_LABEL } from '@/types/station';
 import { formatDistanceKm } from '@/lib/geo/distance';
 import { sortStationsByDistance } from '@/lib/geo/rank';
-import { useGeolocation } from '@/features/map/useGeolocation';
+import { useGeolocation, geolocationErrorMessage } from '@/features/map/useGeolocation';
 
 interface Props {
   stations: Station[];
@@ -25,10 +25,10 @@ export default function NearbyStationsPreview({ stations }: Props) {
         >
           {state.status === 'requesting' ? 'Buscando ubicación…' : 'Buscar mi ubicación'}
         </button>
-        {state.status === 'denied' && (
+        {geolocationErrorMessage(state.status) && (
           <p className="text-xs text-status-bad-text">
-            No autorizaste el acceso a tu ubicación. Podés habilitarlo desde la configuración del navegador
-            o buscar tu localidad manualmente en el mapa.
+            {geolocationErrorMessage(state.status)} También podés buscar tu localidad manualmente en el
+            mapa.
           </p>
         )}
       </div>

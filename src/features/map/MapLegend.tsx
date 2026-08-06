@@ -20,16 +20,6 @@ export default function MapLegend() {
           </li>
         ))}
       </ul>
-      <details className="mt-2 border-t border-border pt-2">
-        <summary className="cursor-pointer text-text-secondary hover:text-text-primary">
-          ¿Qué significa la cobertura estimada?
-        </summary>
-        <p className="mt-1.5 text-text-secondary">
-          Es un cálculo aproximado a partir de la potencia declarada de cada estación. La recepción real
-          puede variar por relieve, edificios, árboles, altura y tipo de antena, cableado y condiciones
-          atmosféricas, entre otros factores.
-        </p>
-      </details>
     </div>
   );
 }

@@ -49,13 +49,11 @@ describe('filtersToSearchParams / searchParamsToFilters', () => {
   it('produce un round-trip idéntico para filtros con valores', () => {
     const filters: MapFilters = {
       province: 'Córdoba',
-      locality: 'Córdoba',
       operator: 'arsat',
       status: 'active',
       physicalChannel: 24,
       virtualChannel: '24.1',
       polarization: 'horizontal',
-      radiusKm: 50,
     };
     const params = filtersToSearchParams(filters);
     expect(searchParamsToFilters(params)).toEqual(filters);
@@ -69,6 +67,11 @@ describe('filtersToSearchParams / searchParamsToFilters', () => {
   it('reconstruye EMPTY_FILTERS desde parámetros vacíos', () => {
     const filters = searchParamsToFilters(new URLSearchParams(''));
     expect(filters).toEqual(EMPTY_FILTERS);
+  });
+
+  it('descarta un status inválido en vez de dejarlo pasar', () => {
+    const filters = searchParamsToFilters(new URLSearchParams('status=bogus'));
+    expect(filters.status).toBeNull();
   });
 });
 
@@ -110,6 +113,16 @@ describe('matchesFilters / filterStations', () => {
     const filters = { ...EMPTY_FILTERS, physicalChannel: 24 };
     expect(matchesFilters(cordobaActive, filters)).toBe(true);
     expect(matchesFilters(buenosAiresPlanned, { ...EMPTY_FILTERS, physicalChannel: 99 })).toBe(false);
+  });
+
+  it('un canal físico 0 explícito no se confunde con "sin filtro"', () => {
+    const zeroChannelStation = buildStation({
+      id: 'zero',
+      slug: 'zero',
+      signals: [{ physicalChannel: 0, virtualChannel: '0.1', frequencyMhz: 470, name: 'Señal Z', network: 'nacional', status: 'active' }],
+    });
+    expect(matchesFilters(zeroChannelStation, { ...EMPTY_FILTERS, physicalChannel: 0 })).toBe(true);
+    expect(matchesFilters(cordobaActive, { ...EMPTY_FILTERS, physicalChannel: 0 })).toBe(false);
   });
 
   it('combina múltiples filtros con AND', () => {
